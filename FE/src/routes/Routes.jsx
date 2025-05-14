@@ -5,6 +5,7 @@ import {
   createRoute,
 } from "@tanstack/react-router";
 import { LayoutRoot } from "../layouts/LayoutRoot";
+import { Login } from "../pages/auth/Login";
 
 // 1. Buat root route
 const rootRoute = createRootRoute();
@@ -34,9 +35,16 @@ const layoutChildrenRoutes = [
   })
 );
 
+const login = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: Login,
+});
+
 // 4. Tambahkan semua routes ke dalam rootRoute
 const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren(layoutChildrenRoutes),
+  login,
 ]);
 
 // 5. Export router
