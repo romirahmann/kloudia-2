@@ -2,11 +2,14 @@
 import { useEffect, useRef, useState } from "react";
 import { FaCircleUser, FaChevronRight } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
+import { useAuth } from "../store/AuthContext";
+import { useNavigate } from "@tanstack/react-router";
 
 export function Topbar({ isOpen, onToggle }) {
   const [profilIsOpen, setProfilIsOpen] = useState(false);
-
+  const { logout } = useAuth();
   const useRefProfil = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -22,6 +25,13 @@ export function Topbar({ isOpen, onToggle }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    setTimeout(() => {
+      navigate({ to: "/login" });
+    }, 1000);
+  };
 
   return (
     <>
@@ -60,7 +70,10 @@ export function Topbar({ isOpen, onToggle }) {
               <h3 className="text-sm">SUPER ADMIN</h3>
             </div>
             <hr className="my-2" />
-            <button className="flex text-center items-center gap-1 rounded-md ">
+            <button
+              onClick={() => handleLogout()}
+              className="flex text-center items-center gap-1 rounded-md "
+            >
               <HiOutlineLogout />
               <span className="">Logout</span>
             </button>

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 
 export function AlertMessage({ message, onClose, type = "warning" }) {
@@ -15,11 +17,14 @@ export function AlertMessage({ message, onClose, type = "warning" }) {
   }[type];
 
   return (
-    <div
-      className={`fixed top-5 right-52 z-50 border-l-4 p-4 rounded shadow-md ${color}`}
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ x: 100, opacity: 0 }}
+      className={`fixed top-2 right-1 z-50 border-l-4 p-4 rounded shadow-md ${color}`}
       role="alert"
     >
       <p className="text-sm font-semibold">{message}</p>
-    </div>
+    </motion.div>
   );
 }

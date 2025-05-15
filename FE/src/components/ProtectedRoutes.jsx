@@ -1,34 +1,24 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { router } from "../routes/Routes";
-import { AlertMessage } from "../shared/Alert";
+
 import { useAuth } from "../store/AuthContext";
+import { Outlet } from "@tanstack/react-router";
 
 export function ProtectedRoute() {
   const { user, loading } = useAuth();
-  const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+    if (!user) {
+      router.navigate({ to: "/login", search: { from: "protected" } });
+    }
+  }, [user, loading]);
 
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
   }
 
   if (!user) {
-    if (!showAlert) {
-      setShowAlert(true);
-      setTimeout(() => {
-        router.navigate({ to: "/login" });
-      }, 1500);
-    }
-    return (
-      <>
-        {showAlert && (
-          <AlertMessage
-            message="Silakan login terlebih dahulu!"
-            type="warning"
-            onClose={() => setShowAlert(false)}
-          />
-        )}
-      </>
-    );
+    return null; // biar nggak render Outlet saat redirect
   }
 
   return <Outlet />;

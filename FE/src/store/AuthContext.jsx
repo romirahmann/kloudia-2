@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+import { useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
