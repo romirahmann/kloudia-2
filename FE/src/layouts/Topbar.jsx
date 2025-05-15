@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from "react";
-import { FaBars, FaCircleUser, FaChevronRight } from "react-icons/fa6";
+import { FaCircleUser, FaChevronRight } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
 
 export function Topbar({ isOpen, onToggle }) {
@@ -34,10 +34,17 @@ export function Topbar({ isOpen, onToggle }) {
             <FaChevronRight />
           </button>
         )}
+
+        <div className="page ms-5 flex flex-col">
+          <h1 className="text-xl lg:text-2xl font-bold">Dashboard</h1>
+          <p className="text-[9px] lg:text-sm text-gray-500">
+            Let's check your update!
+          </p>
+        </div>
         <div className="profilIcon ms-auto flex items-center">
           <button
             onClick={() => setProfilIsOpen(!profilIsOpen)}
-            className="text-2xl  lg:text-5xl"
+            className="text-4xl lg:text-5xl"
           >
             <FaCircleUser />
           </button>

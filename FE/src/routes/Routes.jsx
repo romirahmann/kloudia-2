@@ -6,13 +6,20 @@ import {
 } from "@tanstack/react-router";
 import { LayoutRoot } from "../layouts/LayoutRoot";
 import { Login } from "../pages/auth/Login";
+import { ErrorPage } from "../pages/ErrorPage";
+import { ProtectedRoute } from "../components/ProtectedRoutes";
 
 // 1. Buat root route
 const rootRoute = createRootRoute();
 
+const protectedLayout = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "protected-layout",
+  component: ProtectedRoute,
+});
 // 2. Buat layout route (misalnya layout utama untuk halaman dalam login)
 const layoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => protectedLayout,
   id: "layout-root",
   component: LayoutRoot,
 });
@@ -23,10 +30,6 @@ const layoutChildrenRoutes = [
     path: "/",
     component: "",
   },
-  {
-    path: "/configurations",
-    component: "",
-  },
 ].map(({ path, component }) =>
   createRoute({
     getParentRoute: () => layoutRoute,
@@ -34,6 +37,12 @@ const layoutChildrenRoutes = [
     component,
   })
 );
+
+const notFoundRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "*",
+  component: ErrorPage,
+});
 
 const login = createRoute({
   getParentRoute: () => rootRoute,
@@ -43,8 +52,9 @@ const login = createRoute({
 
 // 4. Tambahkan semua routes ke dalam rootRoute
 const routeTree = rootRoute.addChildren([
-  layoutRoute.addChildren(layoutChildrenRoutes),
+  protectedLayout.addChildren([layoutRoute.addChildren(layoutChildrenRoutes)]),
   login,
+  notFoundRoute,
 ]);
 
 // 5. Export router

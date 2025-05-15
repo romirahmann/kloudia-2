@@ -2,10 +2,21 @@
 import { Outlet } from "@tanstack/react-router";
 import { Topbar } from "./Topbar";
 import { Sidebar } from "./Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
 
 export function LayoutRoot() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  useEffect(() => {
+    if (!isMobile) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  }, []);
+
   return (
     <>
       <div className="flex h-screen overflow-hidden">

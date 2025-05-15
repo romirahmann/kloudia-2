@@ -1,7 +1,12 @@
+/* eslint-disable no-unused-vars */
+import { useState } from "react";
+import { AlertMessage } from "../../shared/Alert";
+
 export function Login() {
+  const [showAlert, setShowAlert] = useState(false);
   return (
     <>
-      <div className="h-screen grid grid-cols-3 justify-center items-center bg-gray-200">
+      <div className="relative h-screen grid grid-cols-3 justify-center items-center bg-gray-200">
         <div className="brand col-span-2 relative h-screen overflow-hidden rounded-e-[20em]">
           {/* Background Image */}
           <div className="absolute  inset-0 bg-login bg-cover bg-center brightness-50 blur-sm"></div>
@@ -39,6 +44,13 @@ export function Login() {
         <div className="box-login p-10 flex justify-center">
           <h1>LOGIN</h1>
         </div>
+
+        {/* ALERT  */}
+        <AlertMessage
+          message="Silakan login terlebih dahulu!"
+          type="warning"
+          onClose={() => setShowAlert(false)}
+        />
       </div>
     </>
   );
