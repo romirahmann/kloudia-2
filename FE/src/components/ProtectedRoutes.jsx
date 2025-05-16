@@ -18,7 +18,7 @@ export function ProtectedRoute() {
   }
 
   if (!user) {
-    return null; // biar nggak render Outlet saat redirect
+    return null;
   }
 
   return <Outlet />;

@@ -28,9 +28,7 @@ export function Topbar({ isOpen, onToggle }) {
 
   const handleLogout = () => {
     logout();
-    setTimeout(() => {
-      navigate({ to: "/login" });
-    }, 1000);
+    navigate({ to: "/login" });
   };
 
   return (
