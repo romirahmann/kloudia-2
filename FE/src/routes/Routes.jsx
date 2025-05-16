@@ -8,6 +8,7 @@ import { LayoutRoot } from "../layouts/LayoutRoot";
 import { Login } from "../pages/auth/Login";
 import { ErrorPage } from "../pages/ErrorPage";
 import { ProtectedRoute } from "../components/ProtectedRoutes";
+import { Userpage } from "../pages/Userpage";
 
 // 1. Buat root route
 const rootRoute = createRootRoute();
@@ -29,6 +30,10 @@ const layoutChildrenRoutes = [
   {
     path: "/",
     component: "",
+  },
+  {
+    path: "/users",
+    component: Userpage,
   },
 ].map(({ path, component }) =>
   createRoute({
