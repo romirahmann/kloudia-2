@@ -195,6 +195,7 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
             <FaChevronLeft />
           </button>
         </div>
+        <hr className="border" />
         <div className={`flex items-center ${isOpen ? "py-4" : "py-4 "}`}>
           <div className="py-5 px-2">{renderMenuItems()}</div>
         </div>
