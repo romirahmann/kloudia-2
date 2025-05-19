@@ -79,7 +79,7 @@ export function Topbar({ isOpen, onToggle, titleData }) {
         {profilIsOpen && (
           <div
             ref={useRefProfil}
-            className={`absolute cardProfil top-12 right-12 px-6 py-2 rounded-md shadow-xl bg-gray-50`}
+            className={`absolute cardProfil top-12 right-12 px-6 py-2 rounded-md shadow-xl bg-gray-50 z-20`}
           >
             <div className="detail-profil my-5">
               <h1 className="text-md font-bold uppercase ">{user?.fullname}</h1>
