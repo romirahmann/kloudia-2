@@ -19,7 +19,7 @@ export function ParticleBackground() {
     () => ({
       background: {
         color: {
-          value: "#330AF5",
+          value: "#0E0445",
         },
       },
       fpsLimit: 120,
