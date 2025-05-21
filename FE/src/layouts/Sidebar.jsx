@@ -128,7 +128,7 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed top-0 left-0 z-[9999] w-72 h-full bg-white dark:bg-gray-950 shadow-lg overflow-y-auto"
+              className="fixed top-0 left-0 z-[9999] w-72 h-full bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 "
             >
               {/* Header */}
               <div className="flex items-center py-4 ps-4">
@@ -166,7 +166,7 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
       <motion.div
         animate={{ width: isOpen ? 300 : 75 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="h-full shadow-md dark:bg-gray-950"
+        className="min-h-full shadow-md dark:shadow-gray-900 dark:bg-gray-950"
       >
         <div
           className={`flex items-center ${isOpen ? "py-4 ps-4" : "py-4 px-4"}`}
@@ -195,7 +195,7 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
             <FaChevronLeft />
           </button>
         </div>
-        <hr className="border" />
+        <hr className="border mt-1 dark:border-gray-900" />
         <div className={`flex items-center ${isOpen ? "py-4" : "py-4 "}`}>
           <div className="py-5 px-2">{renderMenuItems()}</div>
         </div>

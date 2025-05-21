@@ -5,6 +5,7 @@ const UserController = require("../../controllers/master_controller/UserControll
 
 // ROUTES USERS
 router.post("/register", UserController.registrasi);
+router.post("/users-filter", UserController.getAllByFilter);
 router.get("/users", UserController.getAllUsers);
 router.put("/user/:userId", UserController.updateUser);
 router.delete("/user/:userId", UserController.deleteUser);

@@ -10,21 +10,36 @@ export const sidebarMenu = [
     titleName: "DASHBOARD",
     titleDesc: "Let's check your update!",
   },
+
   {
     id: 2,
-    name: "Users",
-    icon: FaUser,
-    path: "/users",
-    titleName: "USERSPAGE",
-    titleDesc: "Overview of activities",
-  },
-  {
-    id: 3,
     name: "Documents",
     icon: FaFolder,
-    path: "/documents",
     titleName: "DOCUMENTS PAGE",
-    titleDesc: "Overview of activities",
+    titleDesc: "LIST DOCUMENT",
+    children: [
+      {
+        id: "2-1",
+        name: "Documents",
+        path: "/documents",
+        titleName: "DOCUMENTS PAGE",
+        titleDesc: "Document Detail",
+      },
+      {
+        id: "2-2",
+        name: "Classifications",
+        path: "/classification",
+        titleName: "CLASSIFICATION PAGE",
+        titleDesc: "Classification Documents ",
+      },
+      {
+        id: "2-3",
+        name: "Cabinet",
+        path: "/cabinet",
+        titleName: "CABINET PAGE",
+        titleDesc: "Cabinet Documents",
+      },
+    ],
   },
   {
     id: 4,

@@ -36,14 +36,16 @@ export function LayoutRoot() {
           onToggle={() => setIsOpen(!isOpen)}
           changeTitle={(data) => handleChange(data)}
         />
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1 min-w-0">
           <Topbar
             isOpen={isOpen}
             onToggle={() => setIsOpen(!isOpen)}
             titleData={title}
           />
-          <main className="p-10 bg-gray-200 dark:bg-gray-900 flex-1 overflow-y-auto">
-            <Outlet />
+          <main className="px-4 py-6 bg-gray-200 dark:bg-gray-900 flex-1 overflow-y-auto overflow-x-hidden  min-w-0">
+            <div className="min-w-0 overflow-x-auto">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

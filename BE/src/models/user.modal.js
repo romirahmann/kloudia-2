@@ -76,6 +76,49 @@ const findByEmail = async (email) =>
 const updateByEmail = async (email, data) =>
   await db("tbl_users").update(data).where({ email });
 
+const getByFilter = async (data = {}) => {
+  const query = db("tbl_users")
+    .select(
+      "u.userId",
+      "u.username",
+      "u.email",
+      "u.password",
+      "u.fullname",
+      "u.roleId",
+      "u.tenantId",
+      "u.grupId",
+      "r.roleName",
+      "t.tenantName",
+      "g.grupName"
+    )
+    .from("tbl_users as u")
+    .join("tbl_roles as r", "r.roleId", "u.roleId")
+    .innerJoin("tbl_tenants as t", "t.tenantId", "u.tenantId")
+    .innerJoin("tbl_grup_user as g", "g.grupId", "u.grupId");
+
+  if (data.search) {
+    query.where(function () {
+      this.where("u.username", "like", `%${data.search}%`)
+        .orWhere("u.email", "like", `%${data.search}%`)
+        .orWhere("u.fullname", "like", `%${data.search}%`);
+    });
+  }
+
+  if (data.grupId && data.roleId) {
+    query.andWhere("u.grupId", data.grupId).andWhere("u.roleId", data.roleId);
+  } else if (data.grupId) {
+    query.andWhere("u.grupId", data.grupId);
+  } else if (data.roleId) {
+    query.andWhere("u.roleId", data.roleId);
+  }
+
+  if (data.tenantId) {
+    query.andWhere("u.tenantId", data.tenantId);
+  }
+
+  return await query;
+};
+
 module.exports = {
   getAll,
   getByUsername,
@@ -84,4 +127,5 @@ module.exports = {
   deleteById,
   findByEmail,
   updateByEmail,
+  getByFilter,
 };

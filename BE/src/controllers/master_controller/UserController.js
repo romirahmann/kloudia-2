@@ -73,6 +73,15 @@ const resetPassword = api.catchAsync(async (req, res) => {
   return api.success(res, "Reset Password Successfully");
 });
 
+const getAllByFilter = api.catchAsync(async (req, res) => {
+  const filter = req.body;
+
+  console.log(filter);
+  let result = await userModel.getByFilter(filter);
+
+  return api.success(res, result);
+});
+
 // OTP
 const requestOtp = api.catchAsync(async (req, res) => {
   const { email } = req.body;
@@ -116,4 +125,5 @@ module.exports = {
   requestOtp,
   resetPassword,
   validateOtp,
+  getAllByFilter,
 };
