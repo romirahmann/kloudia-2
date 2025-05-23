@@ -37,6 +37,7 @@ const getAllUsers = api.catchAsync(async (req, res) => {
 
 const updateUser = api.catchAsync(async (req, res) => {
   const { userId } = req.params;
+
   const data = req.body;
 
   if (!userId) return api.error(res, "User ID is required!", 401);
@@ -76,7 +77,6 @@ const resetPassword = api.catchAsync(async (req, res) => {
 const getAllByFilter = api.catchAsync(async (req, res) => {
   const filter = req.body;
 
-  console.log(filter);
   let result = await userModel.getByFilter(filter);
 
   return api.success(res, result);
@@ -116,6 +116,12 @@ const validateOtp = api.catchAsync(async (req, res) => {
   return api.success(res, "OTP Valid!");
 });
 
+// ROLE
+const getAllRole = api.catchAsync(async (req, res) => {
+  let result = await userModel.getAllRole();
+  return api.success(res, result);
+});
+
 module.exports = {
   registrasi,
   getAllUsers,
@@ -126,4 +132,5 @@ module.exports = {
   resetPassword,
   validateOtp,
   getAllByFilter,
+  getAllRole,
 };

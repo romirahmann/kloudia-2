@@ -26,10 +26,10 @@ export default function SelectInput({
           id={id}
           value={value}
           onChange={onChange}
-          className={`appearance-none w-full bg-white dark:bg-transparent dark:text-gray-50 border border-gray-300 py-3 px-4 pr-10 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out
+          className={`appearance-none w-full bg-white dark:bg-transparent dark:text-gray-50 border border-gray-300 py-3 px-4 pr-10 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out 
             ${
               isPlaceholder
-                ? "text-gray-300 dark:text-gray-500"
+                ? "text-gray-600 md:text-sm text-xs dark:text-gray-500"
                 : "text-gray-700"
             } ${className}`}
         >

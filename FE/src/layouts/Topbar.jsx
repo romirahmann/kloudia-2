@@ -10,6 +10,7 @@ import { useDarkMode } from "../store/ThemeContext";
 
 export function Topbar({ isOpen, onToggle, titleData }) {
   const [profilIsOpen, setProfilIsOpen] = useState(false);
+
   const { theme, toggleTheme } = useDarkMode();
   const [user, setUser] = useState({ fullname: "", role: "" });
   const { logout } = useAuth();
@@ -30,10 +31,10 @@ export function Topbar({ isOpen, onToggle, titleData }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   useEffect(() => {
     let dataUser = JSON.parse(sessionStorage.getItem("user"));
     setUser({ fullname: dataUser.fullname, role: dataUser.roleName });
-    console.log(dataUser);
   }, []);
 
   const handleLogout = () => {

@@ -21,7 +21,7 @@ export function AlertMessage({ message, onClose, type = "warning" }) {
       initial={{ opacity: 0, x: 100 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ x: 100, opacity: 0 }}
-      className={`fixed top-2 right-1 z-50 border-l-4 p-4 rounded shadow-md ${color}`}
+      className={`fixed top-2 w-[15em] right-1 z-50 border-l-4 p-4 rounded shadow-md ${color}`}
       role="alert"
     >
       <p className="text-sm font-semibold">{message}</p>

@@ -11,7 +11,6 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    // console.log(config);
     const token = sessionStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -25,8 +24,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      // Token kadaluarsa atau tidak valid → redirect ke login
+    if (error.response && error.response.status === 403) {
       sessionStorage.removeItem("token");
       window.location.href = "/login";
     }

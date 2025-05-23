@@ -34,6 +34,7 @@ export function Userpage() {
 
   const handleCloseModal = () => {
     setModal({ open: false, type: null, data: null });
+    fecthUsersData();
   };
 
   return (

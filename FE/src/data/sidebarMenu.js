@@ -1,5 +1,5 @@
 import { CgHomeAlt } from "react-icons/cg";
-import { FaUser, FaFolder, FaCog } from "react-icons/fa";
+import { FaFolder, FaCog } from "react-icons/fa";
 
 export const sidebarMenu = [
   {

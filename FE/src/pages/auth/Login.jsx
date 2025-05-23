@@ -40,6 +40,7 @@ export function Login() {
   const handleChangeInput = (e) => {
     setFormUser({ ...formUser, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -88,6 +89,7 @@ export function Login() {
   const handleForgetPassword = () => {
     navigate({ to: "/" });
   };
+
   return (
     <>
       <div className="relative h-screen grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-gray-50">

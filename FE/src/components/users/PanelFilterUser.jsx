@@ -13,6 +13,8 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
     roleId: "",
     tenantId: "",
   });
+  const [roleData, setRoleData] = useState([]);
+  const [grupData, setGrupData] = useState([]);
   const [isOpenFilter, setFilter] = useState(false);
 
   const handleOnChangeFilter = (e) => {
@@ -25,6 +27,30 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
   useEffect(() => {
     fecthUsersFilter(selectedFilter);
   }, [selectedFilter]);
+
+  useEffect(() => {
+    fetchAllRole();
+    fetchAllGrup();
+  }, []);
+
+  const fetchAllRole = async () => {
+    try {
+      const response = await api.get("/master/roles");
+      //   console.log(response.data.data);
+      setRoleData(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchAllGrup = async () => {
+    try {
+      const response = await api.get("/master/groups");
+      //   console.log(response.data.data);
+      setGrupData(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fecthUsersFilter = async (params) => {
     let response = await api.post("/master/users-filter", params);
@@ -78,11 +104,10 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
             value={selectedFilter.grupId}
             onChange={(e) => handleOnChangeFilter(e)}
             placeholder="Select Group"
-            options={[
-              { value: "1", label: "IT" },
-              { value: "2", label: "HRD" },
-              { value: "3", label: "PPIC" },
-            ]}
+            options={grupData.map((grup) => ({
+              value: grup.grupId,
+              label: grup.grupName,
+            }))}
           />
 
           <SelectInput
@@ -92,11 +117,10 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
             value={selectedFilter.roleId}
             onChange={(e) => handleOnChangeFilter(e)}
             placeholder="Select User Role"
-            options={[
-              { value: "1", label: "SUPER ADMIN" },
-              { value: "2", label: "ADMIN" },
-              { value: "3", label: "USER" },
-            ]}
+            options={roleData.map((role) => ({
+              value: role.roleId,
+              label: role.roleName,
+            }))}
           />
         </div>
       )}

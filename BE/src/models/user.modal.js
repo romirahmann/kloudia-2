@@ -119,6 +119,8 @@ const getByFilter = async (data = {}) => {
   return await query;
 };
 
+const getAllRole = async () => await db.select("*").from("tbl_roles");
+
 module.exports = {
   getAll,
   getByUsername,
@@ -128,4 +130,5 @@ module.exports = {
   findByEmail,
   updateByEmail,
   getByFilter,
+  getAllRole,
 };
