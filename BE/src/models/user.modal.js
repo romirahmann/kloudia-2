@@ -62,6 +62,8 @@ const findByEmail = async (email) =>
       "u.roleId",
       "u.tenantId",
       "u.grupId",
+      "u.otpCode",
+      "u.otpExpiredAt",
       "r.roleName",
       "t.tenantName",
       "g.grupName"

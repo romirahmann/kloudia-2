@@ -1,23 +1,39 @@
 /* eslint-disable no-unused-vars */
 
+import { DeleteComponent } from "../../shared/DeleteComponent";
 import { Modal } from "../../shared/Modal";
 import { AddUserModal } from "./modal/AddUserModal";
 import { EditUserModal } from "./modal/EditUserModal";
+import { OtpUserModal } from "./modal/OtpUserModal";
+import { ResetPasswordModal } from "./modal/ResetPasswordModal";
 
 /* eslint-disable no-unused-vars */
-export function ModalUser({ modal, onClose }) {
+export function ModalUser({ modal, onClose, setModal }) {
   const { open, type, data } = modal;
-
-  const renderForm = {
-    ADD: <AddUserModal onClose={onClose} />,
-    EDIT: <EditUserModal data={data} onClose={onClose} />,
-    DELETE: <h1>DELETE</h1>,
-  };
-
   const titleByType = {
     ADD: "ADD USER",
     EDIT: "EDIT USER",
     DELETE: "DELETE USER",
+    RESET: "RESET PASSWORD",
+    OTP: "OTP VERIFICATION",
+  };
+
+  const handleSetModalType = (newType) => {
+    setModal((prev) => ({ ...prev, type: newType }));
+  };
+
+  const renderForm = {
+    ADD: <AddUserModal onClose={onClose} />,
+    EDIT: (
+      <EditUserModal
+        data={data}
+        onClose={onClose}
+        setModalType={handleSetModalType}
+      />
+    ),
+    DELETE: <DeleteComponent data={data} title={type} onClose={onClose} />,
+    RESET: <ResetPasswordModal data={data} />,
+    OTP: <OtpUserModal data={data} setModalType={handleSetModalType} />,
   };
 
   return (

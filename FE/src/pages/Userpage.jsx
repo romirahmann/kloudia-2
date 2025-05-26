@@ -54,7 +54,11 @@ export function Userpage() {
           </div>
         </div>
         {/* MODAL USER */}
-        <ModalUser modal={modal} onClose={handleCloseModal} />
+        <ModalUser
+          modal={modal}
+          onClose={handleCloseModal}
+          setModal={setModal}
+        />
       </div>
     </>
   );

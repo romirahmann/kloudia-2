@@ -89,8 +89,10 @@ const requestOtp = api.catchAsync(async (req, res) => {
   const user = await userModel.findByEmail(email);
   if (!user) return api.error(res, "Email tidak ditemukan", 404);
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const expired = moment().add(2, "minutes").toDate();
+  const otp = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(4, "0");
+  const expired = moment().add(1, "minutes").toDate();
 
   await userModel.update(user.userId, { otpCode: otp, otpExpiredAt: expired });
   await sendOtp(user.email, otp);
@@ -99,19 +101,19 @@ const requestOtp = api.catchAsync(async (req, res) => {
 });
 
 const validateOtp = api.catchAsync(async (req, res) => {
-  const data = req.body;
-
-  if (!data.email || !data.otp)
-    return api.error(res, "Email & OTP Require!", 401);
+  const { email, otp } = req.body;
+  console.log(email, otp);
+  if (!email || !otp) return api.error(res, "Email & OTP Require!", 400);
 
   const user = await userModel.findByEmail(email);
+  console.log(user);
+
   if (!user) return api.error(res, "Email tidak ditemukan", 404);
 
-  if (user.otpCode !== data.otp)
-    return api.error(res, "Data OTP tidak valid ", 401);
+  if (user.otpCode !== otp) return api.error(res, "Data OTP tidak valid ", 401);
 
-  if (moment(user.otpExpiredAt).isAfter(moment()))
-    return api.error(res, "Kode OTP Kadaluarsa", 401);
+  if (moment(user.otpExpiredAt).isBefore(moment()))
+    return api.error(res, "Kode OTP Kadaluarsa", 403);
 
   return api.success(res, "OTP Valid!");
 });

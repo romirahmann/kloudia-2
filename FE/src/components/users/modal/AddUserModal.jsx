@@ -120,7 +120,7 @@ export function AddUserModal({ onClose }) {
 
     try {
       let response = await api.post("/master/register", data);
-      console.log(response.data.data);
+      // console.log(response.data.data);
       setAllert({
         show: true,
         message: "Add User Successfully!",
@@ -208,6 +208,7 @@ export function AddUserModal({ onClose }) {
           ) : (
             ""
           )}
+
           <div className="formInput flex gap-2">
             <Input
               name="password"

@@ -14,7 +14,7 @@ router.delete("/user/:userId", UserController.deleteUser);
 router.put("/reset-password", UserController.resetPassword);
 router.get("/roles", UserController.getAllRole);
 // OTP
-router.post("/otp", UserController.requestOtp);
+router.put("/otp", UserController.requestOtp);
 router.post("/validate-otp", UserController.validateOtp);
 
 // GROUP

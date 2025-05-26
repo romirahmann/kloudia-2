@@ -9,6 +9,11 @@ import { Login } from "../pages/auth/Login";
 import { ErrorPage } from "../pages/ErrorPage";
 import { ProtectedRoute } from "../components/ProtectedRoutes";
 import { Userpage } from "../pages/Userpage";
+import { DashboardPage } from "../pages/DashboardPage";
+import { CabinetPage } from "../pages/CabinetPage";
+import { TenantPage } from "../pages/TenantPage";
+import { GroupPage } from "../pages/GroupPage";
+import { ClassificationPage } from "../pages/ClassificationPage";
 
 // 1. Buat root route
 const rootRoute = createRootRoute();
@@ -29,7 +34,23 @@ const layoutRoute = createRoute({
 const layoutChildrenRoutes = [
   {
     path: "/",
-    component: "",
+    component: DashboardPage,
+  },
+  {
+    path: "/cabinets",
+    component: CabinetPage,
+  },
+  {
+    path: "/classifications",
+    component: ClassificationPage,
+  },
+  {
+    path: "/tenants",
+    component: TenantPage,
+  },
+  {
+    path: "/groups",
+    component: GroupPage,
   },
   {
     path: "/users",

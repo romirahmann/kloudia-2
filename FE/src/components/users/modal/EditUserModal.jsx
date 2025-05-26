@@ -7,9 +7,8 @@ import SelectInput from "../../../shared/SelectInput";
 import { AlertMessage } from "../../../shared/Alert";
 import { AnimatePresence } from "motion/react";
 import { Button } from "../../../shared/Button";
-import { Link } from "@tanstack/react-router";
 
-export function EditUserModal({ onClose, data = [] }) {
+export function EditUserModal({ onClose, data = [], setModalType }) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -186,11 +185,11 @@ export function EditUserModal({ onClose, data = [] }) {
             ""
           )}
           <div className="formInput">
-            <Link to="/">
-              <span className="text-sm ms-2 underline hover:text-dark-primary text-primary">
+            <Button funct={() => setModalType("OTP")} type="button">
+              <span className="text-sm underline hover:text-dark-primary text-primary">
                 Edit Password !
               </span>
-            </Link>
+            </Button>
           </div>
           <div className="formInput flex gap-2">
             <Button
