@@ -39,10 +39,18 @@ const deleteTenant = api.catchAsync(async (req, res) => {
   return api.success(res, result);
 });
 
+const getAllTenantByFilter = api.catchAsync(async (req, res) => {
+  let filter = req.body;
+
+  let result = await modelTenant.bySearch(filter);
+  return api.success(res, result);
+});
+
 module.exports = {
   getAllTenant,
   getTenantById,
   createTenant,
   updateTenant,
   deleteTenant,
+  getAllTenantByFilter,
 };

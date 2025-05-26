@@ -36,7 +36,7 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
   const fetchAllRole = async () => {
     try {
       const response = await api.get("/master/roles");
-      //   console.log(response.data.data);
+
       setRoleData(response.data.data);
     } catch (error) {
       console.log(error);
@@ -45,7 +45,7 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
   const fetchAllGrup = async () => {
     try {
       const response = await api.get("/master/groups");
-      //   console.log(response.data.data);
+
       setGrupData(response.data.data);
     } catch (error) {
       console.log(error);

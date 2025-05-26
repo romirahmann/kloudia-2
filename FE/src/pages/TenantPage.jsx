@@ -1,7 +1,133 @@
+/* eslint-disable no-unused-vars */
+import { useEffect, useState } from "react";
+import api from "../services/axios.service";
+
+import { TableTenant } from "../components/tenants/TableTenant";
+import { Search } from "../shared/Search";
+import SelectInput from "../shared/SelectInput";
+import { ModalTenant } from "../components/tenants/ModalTenants";
+import { AlertMessage } from "../shared/Alert";
+import { AnimatePresence } from "framer-motion";
+
 export function TenantPage() {
+  const [tenants, setTenant] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filter, setFilter] = useState({
+    search: "",
+    status: "",
+  });
+  const [modal, setModal] = useState({
+    open: false,
+    type: null,
+    data: null,
+  });
+  const [showAlert, setShowAlert] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
+
+  useEffect(() => {
+    fetchTenant();
+  }, []);
+
+  const fetchTenant = async () => {
+    try {
+      let response = await api.get("/master/tenants");
+      let dataTenant = response.data.data;
+      setTenant(dataTenant);
+      setFilteredData(dataTenant);
+    } catch (error) {
+      console.log("Fetch Tenant Error", error);
+    }
+  };
+
+  const handleOpenModal = (type, data) => {
+    setModal({ open: true, type, data });
+  };
+
+  const handleOnChangeFilter = (e) => {
+    const { name, value } = e.target;
+
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchFilterTenant = async () => {
+      try {
+        let response = await api.post(`/master/filter-tenants`, filter);
+        setFilteredData(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchFilterTenant();
+  }, [filter]);
+
+  const handleCloseModal = () => {
+    setModal({ open: false, type: null, data: null });
+  };
+
+  const handleAlert = (message) => {
+    setShowAlert({
+      show: true,
+      message: message,
+      type: "success",
+    });
+  };
+
   return (
     <>
-      <h1>USER PAGE</h1>
+      <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md p-9">
+        <div className="filter flex gap-3">
+          <Search
+            onChange={(e) => handleOnChangeFilter(e)}
+            placeholder="Search tenant name, description ..."
+          />
+          <div className="status">
+            <SelectInput
+              name="status"
+              id="status"
+              value={filter.status}
+              placeholder="Status"
+              onChange={(e) => handleOnChangeFilter(e)}
+              options={[
+                { value: 1, label: "Active" },
+                { value: 0, label: "Inactive" },
+              ]}
+            />
+          </div>
+        </div>
+        <div className="tableTenants mt-10 ">
+          <TableTenant
+            data={filteredData}
+            actionTable={(val) => handleOpenModal(val.type, val.data)}
+          />
+        </div>
+        {/* MODAL USER */}
+        <ModalTenant
+          modal={modal}
+          onClose={handleCloseModal}
+          setModal={setModal}
+          setAlert={setShowAlert}
+          message={(message) => handleAlert(message)}
+        />
+
+        {/* ALERT */}
+        <AnimatePresence>
+          {showAlert.show && (
+            <AlertMessage
+              message={`${showAlert.message}`}
+              type={`${showAlert.type}`}
+              onClose={() => setShowAlert((prev) => ({ ...prev, show: false }))}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
 }

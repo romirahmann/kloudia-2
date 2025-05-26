@@ -5,6 +5,8 @@ import { TableUser } from "../components/users/TableUser";
 import api from "../services/axios.service";
 
 import { ModalUser } from "../components/users/ModalUser";
+import { AnimatePresence } from "framer-motion";
+import { AlertMessage } from "../shared/Alert";
 
 export function Userpage() {
   const [users, setUsers] = useState([]);
@@ -13,6 +15,11 @@ export function Userpage() {
     open: false,
     type: null,
     data: null,
+  });
+  const [showAlert, setShowAlert] = useState({
+    show: false,
+    message: "",
+    type: "",
   });
   useEffect(() => {
     fecthUsersData();
@@ -58,7 +65,20 @@ export function Userpage() {
           modal={modal}
           onClose={handleCloseModal}
           setModal={setModal}
+          setAlert={(alert) => setShowAlert(alert)}
         />
+
+        <AnimatePresence>
+          {showAlert.show && (
+            <AlertMessage
+              message={`${showAlert.message}`}
+              type={`${showAlert.type}`}
+              onClose={() =>
+                setShowAlert({ show: false, message: "", type: "" })
+              }
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

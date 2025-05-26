@@ -9,4 +9,23 @@ const update = async (tenantId, data) =>
 const remove = async (tenantId) =>
   await db("tbl_tenants").where({ tenantId }).del();
 
-module.exports = { getAll, getByTenantId, create, update, remove };
+const bySearch = async (filter) => {
+  const query = db.select("*").from("tbl_tenants");
+  if (filter) {
+    query.where(function () {
+      this.where("tenantName", "like", `%${filter.search}%`).orWhere(
+        "tenantDescription",
+        "like",
+        `%${filter.search}%`
+      );
+    });
+  }
+
+  if (filter.status) {
+    query.where("isActive", filter.status);
+  }
+
+  return await query;
+};
+
+module.exports = { getAll, getByTenantId, create, update, remove, bySearch };

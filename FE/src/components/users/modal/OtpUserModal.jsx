@@ -39,7 +39,7 @@ export function OtpUserModal({ data = [], setModalType }) {
     }
   }, [otp]);
 
-  const sendOtp = async () => {
+  const sendOtp = useCallback(async () => {
     let email = {
       email: data.email,
     };
@@ -52,7 +52,7 @@ export function OtpUserModal({ data = [], setModalType }) {
     } catch (error) {
       console.log(error);
     }
-  };
+  });
 
   const handleChangeOtp = useCallback((e, index) => {
     const { name, value } = e.target;
@@ -75,7 +75,7 @@ export function OtpUserModal({ data = [], setModalType }) {
     sendOtp();
     setIsSend(true);
     restart(moment().add(1, "minutes").toDate());
-  }, []);
+  }, [sendOtp, restart]);
 
   const handleValidateOtp = async (kode_otp) => {
     let newData = {

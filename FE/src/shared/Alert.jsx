@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect } from "react";
 
 export function AlertMessage({ message, onClose, type = "warning" }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
-    }, 3000); // otomatis hilang setelah 3 detik
+    }, 3000);
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, []);
 
   const color = {
     success: "bg-green-100 text-green-800 border-green-300",

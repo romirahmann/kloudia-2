@@ -2,7 +2,7 @@ export default function SelectInput({
   label,
   name,
   id,
-  options,
+  options = [],
   placeholder = "Select an option",
   value = "",
   onChange,

@@ -1,10 +1,10 @@
-export function Button({ funct, children, style, type = "submit" }) {
+export function Button({ onClick, children, style, type = "button" }) {
   return (
     <>
       <button
         type={type}
-        onClick={() => funct()}
-        className={`px-4 py-3  ${style}`}
+        onClick={(e) => onClick(e)}
+        className={`px-4 py-2 dark:text-white ${style}`}
       >
         {children}
       </button>

@@ -5,10 +5,10 @@ export function Table({ columns = [], data = [], actionRenderer }) {
       <table className="min-w-full">
         <thead>
           <tr>
-            {columns.map((col) => (
+            {columns.map((col, index) => (
               <th
-                key={col.key}
-                className="border-b p-2 text-left text-primary dark:text-gray-200 whitespace-nowrap"
+                key={col.key + index}
+                className=" border-b p-2 text-left text-primary dark:text-gray-200 whitespace-nowrap"
               >
                 {col.header}
               </th>
@@ -29,7 +29,9 @@ export function Table({ columns = [], data = [], actionRenderer }) {
                     key={col.key}
                     className="border-b p-2 text-sm dark:text-gray-400 text-gray-600 whitespace-nowrap"
                   >
-                    {row[col.key]}
+                    {col.render
+                      ? col.render(row[col.key], row, index)
+                      : row[col.key]}
                   </td>
                 ))}
 

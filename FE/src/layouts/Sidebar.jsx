@@ -76,9 +76,9 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
           {/* Render submenu jika ada dan sedang dibuka */}
           {hasChildren && isSubmenuOpen && isOpen && (
             <div className="pl-9 flex flex-col gap-1">
-              {item.children.map((child) => (
+              {item.children.map((child, index) => (
                 <button
-                  key={child.id}
+                  key={child.id + index}
                   onClick={() => {
                     if (isMobile) {
                       onToggle();

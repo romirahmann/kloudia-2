@@ -9,7 +9,7 @@ import { AnimatePresence } from "motion/react";
 import api from "../../../services/axios.service";
 import { label } from "motion/react-client";
 
-export function AddUserModal({ onClose }) {
+export function AddUserModal({ onClose, setAlert }) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -36,10 +36,16 @@ export function AddUserModal({ onClose }) {
     fetchAllTenant();
   }, []);
 
+  useEffect(() => {
+    if (userLogin.tenantId !== 1) {
+      setFormData((prev) => ({ ...prev, tenantId: userLogin.tenantId }));
+    }
+  }, [userLogin.tenantId]);
+
   const fetchAllRole = async () => {
     try {
       const response = await api.get("/master/roles");
-      //   console.log(response.data.data);
+
       setRoleData(response.data.data);
     } catch (error) {
       console.log(error);
@@ -48,7 +54,7 @@ export function AddUserModal({ onClose }) {
   const fetchAllGrup = async () => {
     try {
       const response = await api.get("/master/groups");
-      //   console.log(response.data.data);
+
       setGrupData(response.data.data);
     } catch (error) {
       console.log(error);
@@ -57,7 +63,7 @@ export function AddUserModal({ onClose }) {
   const fetchAllTenant = async () => {
     try {
       const response = await api.get("/master/tenants");
-      //   console.log(response.data.data);
+
       setTenantData(response.data.data);
     } catch (error) {
       console.log(error);
@@ -69,10 +75,6 @@ export function AddUserModal({ onClose }) {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!formData.tenantId) {
-      setFormData({ ...formData, tenantId: userLogin.tenantId });
-    }
 
     if (
       !formData.username ||
@@ -118,20 +120,20 @@ export function AddUserModal({ onClose }) {
       password: formData.password,
     };
 
+    console.log(data);
+
     try {
       let response = await api.post("/master/register", data);
-      // console.log(response.data.data);
-      setAllert({
+      console.log(response.data.data);
+      onClose();
+      setAlert({
         show: true,
         message: "Add User Successfully!",
         type: "success",
       });
-      setTimeout(() => {
-        onClose();
-      }, 1500);
     } catch (error) {
       console.log(error);
-      setAllert({
+      setAlert({
         show: true,
         message: "Add User Failed!",
         type: "error",
@@ -227,9 +229,8 @@ export function AddUserModal({ onClose }) {
           </div>
           <div className="formInput flex gap-2">
             <Button
-              funct={(e) => handleSubmit(e)}
+              onClick={(e) => handleSubmit(e)}
               style="text-md bg-primary rounded-xl text-white py-2 px-4 hover:bg-dark-primary w-full"
-              type="submit"
             >
               SUBMIT
             </Button>

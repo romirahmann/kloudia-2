@@ -7,6 +7,7 @@ const { sendOtp } = require("../../services/email.service");
 
 const registrasi = api.catchAsync(async (req, res) => {
   const data = req.body;
+  console.log(data);
 
   if (
     !data.username ||

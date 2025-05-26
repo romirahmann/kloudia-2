@@ -25,6 +25,7 @@ router.delete("/group/:grupId", GroupController.deleteGroup);
 
 // TENANTS
 router.get("/tenants", TenantController.getAllTenant);
+router.post("/filter-tenants", TenantController.getAllTenantByFilter);
 router.get("/tenant/:tenantId", TenantController.getTenantById);
 router.put("/tenant/:tenantId", TenantController.updateTenant);
 router.delete("/tenant/:tenantId", TenantController.deleteTenant);
