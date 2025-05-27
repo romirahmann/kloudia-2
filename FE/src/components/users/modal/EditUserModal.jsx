@@ -4,11 +4,16 @@ import api from "../../../services/axios.service";
 import { Form } from "../../../shared/Form";
 import { Input } from "../../../shared/Input";
 import SelectInput from "../../../shared/SelectInput";
-import { AlertMessage } from "../../../shared/Alert";
-import { AnimatePresence } from "motion/react";
 import { Button } from "../../../shared/Button";
 
-export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
+export function EditUserModal({
+  roles,
+  groups,
+  tenants,
+  data,
+  setModalType,
+  onUpdate,
+}) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -19,14 +24,7 @@ export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
     password: "",
     confirmPassword: "",
   });
-  const [roleData, setRoleData] = useState([]);
-  const [grupData, setGrupData] = useState([]);
-  const [tenants, setTenantData] = useState([]);
-  const [alert, setAllert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
+
   const userLogin = JSON.parse(sessionStorage.getItem("user"));
 
   useEffect(() => {
@@ -40,72 +38,12 @@ export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
     });
   }, []);
 
-  useEffect(() => {
-    fetchAllRole();
-    fetchAllGrup();
-    fetchAllTenant();
-  }, []);
-
-  const fetchAllRole = async () => {
-    try {
-      const response = await api.get("/master/roles");
-
-      setRoleData(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const fetchAllGrup = async () => {
-    try {
-      const response = await api.get("/master/groups");
-
-      setGrupData(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const fetchAllTenant = async () => {
-    try {
-      const response = await api.get("/master/tenants");
-
-      setTenantData(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleChangeInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    let newData = {
-      username: formData.username,
-      email: formData.email,
-      fullname: formData.fullname,
-      roleId: parseInt(formData.roleId),
-      grupId: parseInt(formData.grupId),
-      tenantId: parseInt(formData.tenantId),
-      password: formData.password,
-    };
-
-    try {
-      let response = await api.put(`/master/user/${data?.userId}`, newData);
-      onClose();
-      setAlert({
-        show: true,
-        message: "Edit User Successfully!",
-        type: "success",
-      });
-    } catch (error) {
-      console.error("Edit user failed:", error.response?.data || error.message);
-      setAlert({
-        show: true,
-        message: "Edit User Failed!",
-        type: "error",
-      });
-    }
+    onUpdate(formData);
   };
 
   return (
@@ -114,12 +52,14 @@ export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
         <Form>
           <div className="formInput flex gap-2">
             <Input
+              id="fullname"
               name="fullname"
               value={formData.fullname}
               placeholder="Fullname"
               onChange={(e) => handleChangeInput(e)}
             />
             <Input
+              id="username"
               name="username"
               value={formData.username}
               placeholder="username"
@@ -128,6 +68,7 @@ export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
           </div>
           <div className="formInput flex gap-2">
             <Input
+              id="email"
               name="email"
               type="email"
               value={formData.email}
@@ -142,7 +83,7 @@ export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
               value={formData.grupId}
               onChange={(e) => handleChangeInput(e)}
               placeholder="Select Group"
-              options={grupData.map((grup) => ({
+              options={groups.map((grup) => ({
                 value: grup.grupId,
                 label: grup.grupName,
               }))}
@@ -153,7 +94,7 @@ export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
               value={formData.roleId}
               onChange={(e) => handleChangeInput(e)}
               placeholder="Select Role"
-              options={roleData.map((role) => ({
+              options={roles.map((role) => ({
                 value: role.roleId,
                 label: role.roleName,
               }))}
@@ -187,22 +128,13 @@ export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
           <div className="formInput flex gap-2">
             <Button
               onClick={(e) => handleSubmit(e)}
-              style="text-md bg-primary rounded-xl text-white py-2 px-4 hover:bg-dark-primary w-full"
+              className="text-md bg-primary rounded-xl text-white py-2 px-4 hover:bg-dark-primary w-full"
             >
               SUBMIT
             </Button>
           </div>
         </Form>
       </div>
-      <AnimatePresence>
-        {alert.show && (
-          <AlertMessage
-            type={alert.type}
-            message={alert.message}
-            onClose={() => setAllert({ show: false, message: "", type: "" })}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 }

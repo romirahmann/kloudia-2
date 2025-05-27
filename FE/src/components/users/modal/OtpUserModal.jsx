@@ -48,7 +48,7 @@ export function OtpUserModal({ data = [], setModalType }) {
       return;
     }
     try {
-      let response = await api.put("/master/otp", email);
+      await api.put("/master/otp", email);
     } catch (error) {
       console.log(error);
     }
@@ -173,7 +173,7 @@ export function OtpUserModal({ data = [], setModalType }) {
           </p>
           <Button
             funct={handleSendOtp}
-            style="bg-green-500 rounded-xl text-white"
+            className="bg-green-500 rounded-xl text-white"
           >
             Get OTP
           </Button>

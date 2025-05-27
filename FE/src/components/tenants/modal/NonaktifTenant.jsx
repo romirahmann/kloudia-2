@@ -2,20 +2,10 @@
 import { MdBlock } from "react-icons/md";
 import { Button } from "../../../shared/Button";
 import { AnimatePresence, motion } from "framer-motion";
-import api from "../../../services/axios.service";
 
-export function NonaktifTenant({ data = [], message, onClose }) {
+export function NonaktifTenant({ onNonaktif, onClose }) {
   const handleNonaktif = async () => {
-    try {
-      let response = await api.put(`/master/tenant/${data.tenantId}`, {
-        isActive: 0,
-      });
-      // console.log(response.data.data);
-      message("Nonaktif Data Successfully!");
-      onClose();
-    } catch (error) {
-      console.log(error);
-    }
+    onNonaktif();
   };
 
   return (
@@ -38,13 +28,13 @@ export function NonaktifTenant({ data = [], message, onClose }) {
         <div className="btn flex justify-end gap-2">
           <Button
             onClick={onClose}
-            style="bg-transparent border border-gray-700 rounded-md text-gray-900"
+            className="bg-transparent border border-gray-700 rounded-md text-gray-900"
           >
             Cancel
           </Button>
           <Button
             onClick={handleNonaktif}
-            style="bg-yellow-700 hover:bg-red-600 rounded-md text-white"
+            className="bg-yellow-700 hover:bg-red-600 rounded-md text-white"
           >
             Nonaktif
           </Button>

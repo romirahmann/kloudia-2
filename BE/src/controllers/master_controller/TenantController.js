@@ -17,8 +17,11 @@ const getTenantById = api.catchAsync(async (req, res) => {
 
 const createTenant = api.catchAsync(async (req, res) => {
   const data = req.body;
-  if (data) return api.error(res, "Data not found", 401);
+  data.isActive = 1;
+  console.log(data);
+  if (!data) return api.error(res, "Data not found", 401);
   let result = await modelTenant.create(data);
+  emit("add_tenant", 200);
   return api.success(res, result);
 });
 
@@ -30,7 +33,7 @@ const updateTenant = api.catchAsync(async (req, res) => {
     return api.error(res, "Invalid Tenant ID or data", 401);
 
   let result = await modelTenant.update(tenantId, data);
-  emit("update_tenant", { message: "UPDATE TENANT SUCCESSFULLY!" });
+  emit("update_tenant", 200);
   return api.success(res, result);
 });
 
@@ -38,6 +41,7 @@ const deleteTenant = api.catchAsync(async (req, res) => {
   const { tenantId } = req.params;
   if (!tenantId) return api.error(res, "Invalid Tenant ID", 401);
   let result = await modelTenant.remove(tenantId);
+  emit("delete_tenant", 200);
   return api.success(res, result);
 });
 

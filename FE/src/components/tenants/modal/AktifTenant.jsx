@@ -2,36 +2,10 @@
 
 import { Button } from "../../../shared/Button";
 import { AnimatePresence, motion } from "framer-motion";
-import api from "../../../services/axios.service";
+
 import { FaCheckCircle } from "react-icons/fa";
-import { AlertMessage } from "../../../shared/Alert";
-import { useState } from "react";
 
-export function AktifTenant({ data = [], onClose, message }) {
-  const [showAlert, setShowAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
-  const handleAktif = async () => {
-    // console.log(data);
-    try {
-      let response = await api.put(`/master/tenant/${data?.tenantId}`, {
-        isActive: 1,
-      });
-      // console.log(response.data.data);
-      message("Tenant Aktif!");
-      onClose();
-    } catch (error) {
-      console.log(error);
-      setShowAlert({
-        show: true,
-        message: "Failed To Inactive Tenant",
-        type: "error",
-      });
-    }
-  };
-
+export function AktifTenant({ onActive, onClose }) {
   return (
     <>
       <div className="w-full">
@@ -52,28 +26,17 @@ export function AktifTenant({ data = [], onClose, message }) {
         <div className="btn flex justify-end gap-2">
           <Button
             onClick={onClose}
-            style="bg-transparent border border-gray-700 rounded-md text-gray-900"
+            className="bg-transparent border border-gray-700 rounded-md text-gray-900"
           >
             Cancel
           </Button>
           <Button
-            onClick={handleAktif}
-            style="bg-yellow-700 hover:bg-red-600 rounded-md text-white"
+            onClick={() => onActive()}
+            className="bg-yellow-700 hover:bg-red-600 rounded-md text-white"
           >
             Aktifkan
           </Button>
         </div>
-        <AnimatePresence>
-          {showAlert.show && (
-            <AlertMessage
-              message={showAlert.message}
-              type={showAlert.type}
-              onClose={() =>
-                setShowAlert({ show: false, message: "", type: "" })
-              }
-            />
-          )}
-        </AnimatePresence>
       </div>
     </>
   );

@@ -3,7 +3,7 @@ import { FaTrash } from "react-icons/fa6";
 import { Button } from "./Button";
 import { AnimatePresence, motion } from "framer-motion";
 
-export function DeleteComponent({ actionDelete, title = "", onClose }) {
+export function DeleteComponent({ onDelete, onClose }) {
   return (
     <>
       <div className="w-full">
@@ -23,14 +23,14 @@ export function DeleteComponent({ actionDelete, title = "", onClose }) {
         </h1>
         <div className="btn flex justify-end gap-2">
           <Button
-            funct={onClose}
-            style="bg-transparent border border-gray-700 rounded-md text-gray-900"
+            onClick={onClose}
+            className="bg-transparent border border-gray-700 rounded-md text-gray-900"
           >
             Cancel
           </Button>
           <Button
-            onClick={actionDelete}
-            style="bg-red-700 hover:bg-red-600 rounded-md text-white"
+            onClick={onDelete}
+            className="bg-red-700 hover:bg-red-600 rounded-md text-white"
           >
             Delete
           </Button>

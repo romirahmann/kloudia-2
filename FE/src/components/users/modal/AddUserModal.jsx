@@ -4,12 +4,8 @@ import { Input } from "../../../shared/Input";
 import SelectInput from "../../../shared/SelectInput";
 import { Button } from "../../../shared/Button";
 import { Form } from "../../../shared/Form";
-import { AlertMessage } from "../../../shared/Alert";
-import { AnimatePresence } from "motion/react";
-import api from "../../../services/axios.service";
-import { label } from "motion/react-client";
 
-export function AddUserModal({ onClose, setAlert }) {
+export function AddUserModal({ onAdd, roles, groups, tenants }) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -20,21 +16,8 @@ export function AddUserModal({ onClose, setAlert }) {
     password: "",
     confirmPassword: "",
   });
-  const [roleData, setRoleData] = useState([]);
-  const [grupData, setGrupData] = useState([]);
-  const [tenants, setTenantData] = useState([]);
-  const [alert, setAllert] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
-  const userLogin = JSON.parse(sessionStorage.getItem("user"));
 
-  useEffect(() => {
-    fetchAllRole();
-    fetchAllGrup();
-    fetchAllTenant();
-  }, []);
+  const userLogin = JSON.parse(sessionStorage.getItem("user"));
 
   useEffect(() => {
     if (userLogin.tenantId !== 1) {
@@ -42,103 +25,12 @@ export function AddUserModal({ onClose, setAlert }) {
     }
   }, [userLogin.tenantId]);
 
-  const fetchAllRole = async () => {
-    try {
-      const response = await api.get("/master/roles");
-
-      setRoleData(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const fetchAllGrup = async () => {
-    try {
-      const response = await api.get("/master/groups");
-
-      setGrupData(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const fetchAllTenant = async () => {
-    try {
-      const response = await api.get("/master/tenants");
-
-      setTenantData(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleChangeInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (
-      !formData.username ||
-      !formData.email ||
-      !formData.fullname ||
-      !formData.roleId ||
-      !formData.grupId ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
-      setAllert({
-        show: true,
-        message: "All Required!",
-        type: "warning",
-      });
-      return;
-    }
-
-    if (formData.password.length < 7) {
-      setAllert({
-        show: true,
-        message: "Password must have at least 8 characters!",
-        type: "error",
-      });
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setAllert({
-        show: true,
-        message: "Password Not Match!",
-        type: "error",
-      });
-      return;
-    }
-
-    let data = {
-      username: formData.username,
-      email: formData.email,
-      fullname: formData.fullname,
-      roleId: parseInt(formData.roleId),
-      grupId: parseInt(formData.grupId),
-      tenantId: parseInt(formData.tenantId),
-      password: formData.password,
-    };
-
-    console.log(data);
-
-    try {
-      let response = await api.post("/master/register", data);
-      console.log(response.data.data);
-      onClose();
-      setAlert({
-        show: true,
-        message: "Add User Successfully!",
-        type: "success",
-      });
-    } catch (error) {
-      console.log(error);
-      setAlert({
-        show: true,
-        message: "Add User Failed!",
-        type: "error",
-      });
-    }
+    onAdd(formData);
   };
 
   return (
@@ -147,12 +39,14 @@ export function AddUserModal({ onClose, setAlert }) {
         <Form>
           <div className="formInput flex gap-2">
             <Input
+              id="fullname"
               name="fullname"
               value={formData.fullname}
               placeholder="Fullname"
               onChange={(e) => handleChangeInput(e)}
             />
             <Input
+              id="username"
               name="username"
               value={formData.username}
               placeholder="username"
@@ -161,6 +55,7 @@ export function AddUserModal({ onClose, setAlert }) {
           </div>
           <div className="formInput flex gap-2">
             <Input
+              id="email"
               name="email"
               type="email"
               value={formData.email}
@@ -168,14 +63,14 @@ export function AddUserModal({ onClose, setAlert }) {
               onChange={(e) => handleChangeInput(e)}
             />
           </div>
-          <div className="formInput flex gap-2">
+          <div className="formInput flex gap-2 px-2">
             <SelectInput
               name="grupId"
               id="grupId"
               value={formData.grupId}
               onChange={(e) => handleChangeInput(e)}
               placeholder="Select Group"
-              options={grupData.map((grup) => ({
+              options={groups.map((grup) => ({
                 value: grup.grupId,
                 label: grup.grupName,
               }))}
@@ -186,7 +81,7 @@ export function AddUserModal({ onClose, setAlert }) {
               value={formData.roleId}
               onChange={(e) => handleChangeInput(e)}
               placeholder="Select Role"
-              options={roleData.map((role) => ({
+              options={roles.map((role) => ({
                 value: role.roleId,
                 label: role.roleName,
               }))}
@@ -194,7 +89,7 @@ export function AddUserModal({ onClose, setAlert }) {
           </div>
           {/* TENANTS SELECT INPUT */}
           {userLogin.tenantId === 1 ? (
-            <div className="formInput flex gap-2">
+            <div className="formInput flex px-2">
               <SelectInput
                 name="tenantId"
                 id="tenantId"
@@ -213,6 +108,7 @@ export function AddUserModal({ onClose, setAlert }) {
 
           <div className="formInput flex gap-2">
             <Input
+              id="password"
               name="password"
               type="password"
               value={formData.password}
@@ -220,6 +116,7 @@ export function AddUserModal({ onClose, setAlert }) {
               onChange={(e) => handleChangeInput(e)}
             />
             <Input
+              id="confirmPassword"
               name="confirmPassword"
               type="password"
               value={formData.confirmPassword}
@@ -230,22 +127,13 @@ export function AddUserModal({ onClose, setAlert }) {
           <div className="formInput flex gap-2">
             <Button
               onClick={(e) => handleSubmit(e)}
-              style="text-md bg-primary rounded-xl text-white py-2 px-4 hover:bg-dark-primary w-full"
+              className="text-md bg-primary rounded-xl text-white py-2 px-4 hover:bg-dark-primary w-full"
             >
               SUBMIT
             </Button>
           </div>
         </Form>
       </div>
-      <AnimatePresence>
-        {alert.show && (
-          <AlertMessage
-            type={alert.type}
-            message={alert.message}
-            onClose={() => setAllert({ show: false, message: "", type: "" })}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 }
