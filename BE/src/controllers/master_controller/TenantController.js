@@ -1,5 +1,6 @@
 const modelTenant = require("../../models/tenant.model");
 const api = require("../../tools/common");
+const { emit } = require("../../services/socket.service");
 
 const getAllTenant = api.catchAsync(async (req, res) => {
   let result = await modelTenant.getAll();
@@ -29,6 +30,7 @@ const updateTenant = api.catchAsync(async (req, res) => {
     return api.error(res, "Invalid Tenant ID or data", 401);
 
   let result = await modelTenant.update(tenantId, data);
+  emit("update_tenant", { message: "UPDATE TENANT SUCCESSFULLY!" });
   return api.success(res, result);
 });
 

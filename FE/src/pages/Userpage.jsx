@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { PanelFilterUser } from "../components/users/PanelFilterUser";
 import { TableUser } from "../components/users/TableUser";
 import api from "../services/axios.service";
-
 import { ModalUser } from "../components/users/ModalUser";
 import { AnimatePresence } from "framer-motion";
 import { AlertMessage } from "../shared/Alert";
+import { listenToUpdate } from "../services/socket.service";
 
 export function Userpage() {
   const [users, setUsers] = useState([]);
@@ -21,6 +21,17 @@ export function Userpage() {
     message: "",
     type: "",
   });
+
+  useEffect(() => {
+    const handleUpdate = (newData) => {
+      fecthUsersData();
+    };
+
+    listenToUpdate("update_user", handleUpdate);
+    listenToUpdate("add_user", handleUpdate);
+    listenToUpdate("delete_user", handleUpdate);
+  }, []);
+
   useEffect(() => {
     fecthUsersData();
   }, []);

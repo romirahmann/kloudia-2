@@ -24,7 +24,6 @@ export function ModalUser({ modal, onClose, setModal, setAlert }) {
   };
 
   const handleDeleteData = async () => {
-    console.log(data);
     try {
       await api.delete(`/master/user/${data.userId}`);
 
@@ -51,6 +50,7 @@ export function ModalUser({ modal, onClose, setModal, setAlert }) {
         data={data}
         onClose={onClose}
         setModalType={handleSetModalType}
+        setAlert={setAlert}
       />
     ),
     DELETE: (

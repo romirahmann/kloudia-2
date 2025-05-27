@@ -8,7 +8,7 @@ import { AlertMessage } from "../../../shared/Alert";
 import { AnimatePresence } from "motion/react";
 import { Button } from "../../../shared/Button";
 
-export function EditUserModal({ onClose, data = [], setModalType }) {
+export function EditUserModal({ onClose, data = [], setModalType, setAlert }) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -49,7 +49,7 @@ export function EditUserModal({ onClose, data = [], setModalType }) {
   const fetchAllRole = async () => {
     try {
       const response = await api.get("/master/roles");
-      //   console.log(response.data.data);
+
       setRoleData(response.data.data);
     } catch (error) {
       console.log(error);
@@ -58,7 +58,7 @@ export function EditUserModal({ onClose, data = [], setModalType }) {
   const fetchAllGrup = async () => {
     try {
       const response = await api.get("/master/groups");
-      //   console.log(response.data.data);
+
       setGrupData(response.data.data);
     } catch (error) {
       console.log(error);
@@ -67,7 +67,7 @@ export function EditUserModal({ onClose, data = [], setModalType }) {
   const fetchAllTenant = async () => {
     try {
       const response = await api.get("/master/tenants");
-      //   console.log(response.data.data);
+
       setTenantData(response.data.data);
     } catch (error) {
       console.log(error);
@@ -79,10 +79,6 @@ export function EditUserModal({ onClose, data = [], setModalType }) {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!formData.tenantId) {
-      setFormData({ ...formData, tenantId: userLogin.tenantId });
-    }
 
     let newData = {
       username: formData.username,
@@ -96,18 +92,15 @@ export function EditUserModal({ onClose, data = [], setModalType }) {
 
     try {
       let response = await api.put(`/master/user/${data?.userId}`, newData);
-      console.log(response.data.data);
-      setAllert({
+      onClose();
+      setAlert({
         show: true,
         message: "Edit User Successfully!",
         type: "success",
       });
-      setTimeout(() => {
-        onClose();
-      }, 1500);
     } catch (error) {
       console.error("Edit user failed:", error.response?.data || error.message);
-      setAllert({
+      setAlert({
         show: true,
         message: "Edit User Failed!",
         type: "error",
@@ -193,9 +186,8 @@ export function EditUserModal({ onClose, data = [], setModalType }) {
           </div>
           <div className="formInput flex gap-2">
             <Button
-              funct={(e) => handleSubmit(e)}
+              onClick={(e) => handleSubmit(e)}
               style="text-md bg-primary rounded-xl text-white py-2 px-4 hover:bg-dark-primary w-full"
-              type="submit"
             >
               SUBMIT
             </Button>

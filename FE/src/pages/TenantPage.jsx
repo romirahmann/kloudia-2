@@ -8,6 +8,7 @@ import SelectInput from "../shared/SelectInput";
 import { ModalTenant } from "../components/tenants/ModalTenants";
 import { AlertMessage } from "../shared/Alert";
 import { AnimatePresence } from "framer-motion";
+import { listenToUpdate } from "../services/socket.service";
 
 export function TenantPage() {
   const [tenants, setTenant] = useState([]);
@@ -29,6 +30,16 @@ export function TenantPage() {
 
   useEffect(() => {
     fetchTenant();
+  }, []);
+
+  useEffect(() => {
+    const handleUpdate = (data) => {
+      fetchTenant();
+    };
+
+    listenToUpdate("update_tenant", handleUpdate);
+    listenToUpdate("add_tenant", handleUpdate);
+    listenToUpdate("delete_tenant", handleUpdate);
   }, []);
 
   const fetchTenant = async () => {
