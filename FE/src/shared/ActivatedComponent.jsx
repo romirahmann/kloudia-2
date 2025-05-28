@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 
-import { Button } from "../../../shared/Button";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { FaCheckCircle } from "react-icons/fa";
+import { Button } from "./Button";
 
-export function AktifTenant({ onActive, onClose }) {
+export function ActivatedComponent({ onActive, onClose }) {
   return (
     <>
       <div className="w-full">

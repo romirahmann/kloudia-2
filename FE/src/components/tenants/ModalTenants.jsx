@@ -1,12 +1,12 @@
 /* eslint-disable no-undef */
 import api from "../../services/axios.service";
+import { ActivatedComponent } from "../../shared/ActivatedComponent";
 import { DeleteComponent } from "../../shared/DeleteComponent";
 import { Modal } from "../../shared/Modal";
+import { NonactiveComponent } from "../../shared/NonaktifComponent";
 import { AddTenant } from "./modal/AddTenant";
-import { AktifTenant } from "./modal/AktifTenant";
 
 import { EditTenant } from "./modal/EditTenant";
-import { NonaktifTenant } from "./modal/NonaktifTenant";
 
 /* eslint-disable no-unused-vars */
 export function ModalTenant({ modal, onClose, setAlert }) {
@@ -26,17 +26,16 @@ export function ModalTenant({ modal, onClose, setAlert }) {
 
       setAlert({
         show: true,
-        message: "Add Tenant Succesffuly!",
+        message: "Tenant created successfully!",
         type: "success",
       });
       onClose();
     } catch (error) {
       setAlert({
         show: true,
-        message: "Add Tenant Failed!",
+        message: "Failed to add tenant. Please try again!",
         type: "error",
       });
-      console.log(error.response);
     }
   };
 
@@ -45,17 +44,16 @@ export function ModalTenant({ modal, onClose, setAlert }) {
       await api.put(`/master/tenant/${data.tenantId}`, newData);
       setAlert({
         show: true,
-        message: "Update Tenant Succesffuly!",
+        message: "Tenant updated successfully!",
         type: "success",
       });
       onClose();
     } catch (error) {
       setAlert({
         show: true,
-        message: "Update Tenant Failed!",
+        message: "Failed to update tenant. Please ensure all fields are valid!",
         type: "error",
       });
-      console.log(error.response);
     }
   };
 
@@ -65,14 +63,13 @@ export function ModalTenant({ modal, onClose, setAlert }) {
       onClose();
       setAlert({
         show: true,
-        message: "Delete Tenant Succesffuly!",
+        message: "Tenant has been deleted successfully!",
         type: "success",
       });
     } catch (error) {
-      console.log(error.response);
       setAlert({
         show: true,
-        message: "Delete Tenant Failed!",
+        message: "Unable to delete tenant. Please try again later!",
         type: "error",
       });
     }
@@ -86,17 +83,16 @@ export function ModalTenant({ modal, onClose, setAlert }) {
 
       setAlert({
         show: true,
-        message: "Nonactive Tenant Succesffuly!",
+        message: "Tenant has been deactivated!",
         type: "success",
       });
       onClose();
     } catch (error) {
       setAlert({
         show: true,
-        message: "Inactive Tenant Succesffuly!",
+        message: "Failed to deactivate tenant. Please try again!",
         type: "error",
       });
-      console.log(error);
     }
   };
 
@@ -108,15 +104,16 @@ export function ModalTenant({ modal, onClose, setAlert }) {
 
       setAlert({
         show: true,
-        message: "Tenant Active Now!",
+        message: "Tenant has been reactivated successfully!",
         type: "success",
       });
       onClose();
     } catch (error) {
       console.log(error);
-      setShowAlert({
+      setAlert({
         show: true,
-        message: "Failed to Activeted Tenant!",
+        message:
+          "Failed to reactivate tenant. Please check your connection or try again later!",
         type: "error",
       });
     }
@@ -130,8 +127,10 @@ export function ModalTenant({ modal, onClose, setAlert }) {
     DELETE: (
       <DeleteComponent onDelete={handleDelete} data={data} onClose={onClose} />
     ),
-    NONAKTIF: <NonaktifTenant onClose={onClose} onNonaktif={handleNonaktif} />,
-    AKTIF: <AktifTenant onActive={handleActive} onClose={onClose} />,
+    NONAKTIF: (
+      <NonactiveComponent onClose={onClose} onNonaktif={handleNonaktif} />
+    ),
+    AKTIF: <ActivatedComponent onActive={handleActive} onClose={onClose} />,
   };
   return (
     <>

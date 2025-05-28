@@ -9,7 +9,6 @@ const getAll = async () =>
       "c.tenantId",
       "c.isActive",
       "t.tenantName",
-      "t.isActive",
       "g.grupName"
     )
     .from("tbl_cabinets as c")

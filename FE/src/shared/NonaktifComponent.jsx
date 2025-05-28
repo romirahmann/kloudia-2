@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { MdBlock } from "react-icons/md";
-import { Button } from "../../../shared/Button";
-import { AnimatePresence, motion } from "framer-motion";
 
-export function NonaktifTenant({ onNonaktif, onClose }) {
+import { AnimatePresence, motion } from "framer-motion";
+import { MdBlock } from "react-icons/md";
+import { Button } from "./Button";
+
+export function NonactiveComponent({ onNonaktif, onClose }) {
   const handleNonaktif = async () => {
     onNonaktif();
   };

@@ -5,6 +5,7 @@ const UserController = require("../../controllers/master_controller/UserControll
 const GroupController = require("../../controllers/master_controller/GroupController");
 const TenantController = require("../../controllers/master_controller/TenantController");
 const CabinetController = require("../../controllers/master_controller/CabinetController");
+const ClassificationController = require("../../controllers/master_controller/ClassificationController");
 
 // ROUTES USERS
 router.post("/register", UserController.registrasi);
@@ -37,5 +38,8 @@ router.get("/cabinets", CabinetController.getAllCabinets);
 router.post("/cabinet", CabinetController.createCabinet);
 router.put("/cabinet/:cabinetId", CabinetController.updateCabinet);
 router.delete("/cabinet/:cabinetId", CabinetController.deleteCabinet);
+
+// CLASSIFICATIONS
+router.get("/classifications", ClassificationController.getAllClassification);
 
 module.exports = router;

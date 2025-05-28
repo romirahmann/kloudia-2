@@ -88,7 +88,7 @@ export function TenantPage() {
   return (
     <>
       <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md p-9">
-        <div className="filter flex gap-2">
+        <div className="filter flex items-center gap-2">
           <Search
             onChange={(e) => handleOnChangeFilter(e)}
             placeholder="Search tenant name, description ..."

@@ -4,16 +4,16 @@ import { Button } from "../shared/Button";
 import { Search } from "../shared/Search";
 import { FaPlus } from "react-icons/fa";
 import api from "../services/axios.service";
-import { TableTenant } from "../components/tenants/TableTenant";
+
 import { TableCabinet } from "../components/cabinets/TableCabinet";
 import { ModalCabinet } from "../components/cabinets/ModalCabinet";
 import { AlertMessage } from "../shared/Alert";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence } from "framer-motion";
+import { listenToUpdate } from "../services/socket.service";
 
 export function CabinetPage() {
   const [cabinets, setCabinet] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-
   const [modal, setModal] = useState({
     open: false,
     type: null,
@@ -25,6 +25,15 @@ export function CabinetPage() {
     message: "",
     type: "",
   });
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      fetchCabinet();
+    };
+    listenToUpdate("add_cabinet", handleUpdate);
+    listenToUpdate("update_cabinet", handleUpdate);
+    listenToUpdate("delete_cabinet", handleUpdate);
+  }, []);
 
   useEffect(() => {
     fetchCabinet();
@@ -50,7 +59,7 @@ export function CabinetPage() {
   return (
     <>
       <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md p-9">
-        <div className="filter flex gap-2">
+        <div className="filter flex items-center gap-2">
           <Search
             onChange={(e) => handleOnChangeSearh(e)}
             placeholder="Search cabinet name ..."
