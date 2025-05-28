@@ -4,6 +4,7 @@ var router = express.Router();
 const UserController = require("../../controllers/master_controller/UserController");
 const GroupController = require("../../controllers/master_controller/GroupController");
 const TenantController = require("../../controllers/master_controller/TenantController");
+const CabinetController = require("../../controllers/master_controller/CabinetController");
 
 // ROUTES USERS
 router.post("/register", UserController.registrasi);
@@ -30,5 +31,11 @@ router.post("/tenant", TenantController.createTenant);
 router.get("/tenant/:tenantId", TenantController.getTenantById);
 router.put("/tenant/:tenantId", TenantController.updateTenant);
 router.delete("/tenant/:tenantId", TenantController.deleteTenant);
+
+// CABINETS
+router.get("/cabinets", CabinetController.getAllCabinets);
+router.post("/cabinet", CabinetController.createCabinet);
+router.put("/cabinet/:cabinetId", CabinetController.updateCabinet);
+router.delete("/cabinet/:cabinetId", CabinetController.deleteCabinet);
 
 module.exports = router;

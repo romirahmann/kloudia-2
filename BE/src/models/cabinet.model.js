@@ -1,0 +1,33 @@
+const db = require("../database/db.config");
+
+const getAll = async () =>
+  await db
+    .select(
+      "c.cabinetId",
+      "c.cabinetName",
+      "c.grupId",
+      "c.tenantId",
+      "c.isActive",
+      "t.tenantName",
+      "t.isActive",
+      "g.grupName"
+    )
+    .from("tbl_cabinets as c")
+    .join("tbl_tenants as t", "c.tenantId", "t.tenantId")
+    .innerJoin("tbl_grup_user as g", "c.grupId", "g.grupId");
+
+const insert = async (data) => db("tbl_cabinets").insert(data);
+const update = async (cabinetId, data) =>
+  db("tbl_cabinets").update(data).where({ cabinetId });
+const remove = async (cabinetId) =>
+  db("tbl_cabinets").where({ cabinetId }).del();
+
+const getByFilter = async (filter) => {};
+
+module.exports = {
+  getAll,
+  getByFilter,
+  insert,
+  update,
+  remove,
+};

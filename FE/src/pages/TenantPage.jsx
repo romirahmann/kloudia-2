@@ -85,10 +85,6 @@ export function TenantPage() {
     setModal({ open: false, type: null, data: null });
   };
 
-  const handleAlert = (alertFromModal) => {
-    setShowAlert(alertFromModal);
-  };
-
   return (
     <>
       <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md p-9">
@@ -132,7 +128,6 @@ export function TenantPage() {
           onClose={handleCloseModal}
           setModal={setModal}
           setAlert={setShowAlert}
-          message={(message) => handleAlert(message)}
         />
 
         {/* ALERT */}
