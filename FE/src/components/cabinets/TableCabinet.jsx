@@ -15,9 +15,11 @@ export function TableCabinet({ data, onAction }) {
       key: "isActive",
       render: (value) =>
         value === 1 ? (
-          <span className="text-green-700">Active</span>
+          <span className="bg-green-700 text-white p-2 rounded-md">Active</span>
         ) : (
-          <span className="text-red-700">Non Active</span>
+          <span className="bg-red-700 text-white p-2 rounded-md">
+            Non Active
+          </span>
         ),
     },
   ];
