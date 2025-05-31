@@ -7,6 +7,8 @@ import { Button } from "../shared/Button";
 import { FaPlus } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
 import { AlertMessage } from "../shared/Alert";
+import { TableClassification } from "../components/classifications/TableClassification";
+import { ModalClassification } from "../components/classifications/ModalClassification";
 
 export function ClassificationPage() {
   const [classifictaions, setClassification] = useState([]);
@@ -22,6 +24,11 @@ export function ClassificationPage() {
     type: "",
   });
 
+  const [filter, setFilter] = useState({
+    search: "",
+    status: "",
+  });
+
   useEffect(() => {
     fetchClassification();
   }, []);
@@ -35,19 +42,50 @@ export function ClassificationPage() {
     listenToUpdate("delete_classification", handleUpdate);
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (filter.search.trim() === "" && filter.status === "") {
+          await fetchClassification();
+        } else {
+          const response = await api.post(
+            `/master/filter-classification`,
+            filter
+          );
+          setClassification(response.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [filter]);
+
   // FETCH CLASSIFICATION
   const fetchClassification = async () => {
     try {
       let res = await api.get("/master/classifications");
+
       setClassification(res.data.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleOnChangeSearh = () => {};
+  const handleOnChangeSearh = async (e) => {
+    const { name, value } = e.target;
+
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [name]: value,
+    }));
+  };
   const handleOpenModal = (type, data) => {
     setModal({ open: true, type, data });
+  };
+  const handleCloseModal = () => {
+    setModal({ open: false, type: "", data: "" });
   };
 
   return (
@@ -56,7 +94,7 @@ export function ClassificationPage() {
         <div className="filter flex items-center gap-2">
           <Search
             onChange={(e) => handleOnChangeSearh(e)}
-            placeholder="Search cabinet name ..."
+            placeholder="Search name or description ..."
           />
           <div className="status cursor-pointer"></div>
           <div className="addTenant">
@@ -69,6 +107,20 @@ export function ClassificationPage() {
             </Button>
           </div>
         </div>
+
+        <div className="mt-10">
+          <TableClassification
+            data={classifictaions}
+            actionTable={({ type, data }) => handleOpenModal(type, data)}
+          />
+        </div>
+
+        <ModalClassification
+          modal={modal}
+          onClose={handleCloseModal}
+          setModal={setModal}
+          setAlert={setShowAlert}
+        />
 
         {/* ALERT */}
         <AnimatePresence>

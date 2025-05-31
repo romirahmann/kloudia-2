@@ -41,5 +41,18 @@ router.delete("/cabinet/:cabinetId", CabinetController.deleteCabinet);
 
 // CLASSIFICATIONS
 router.get("/classifications", ClassificationController.getAllClassification);
+router.put(
+  "/classification/:classificationId",
+  ClassificationController.updateClassification
+);
+router.post("/classification", ClassificationController.createClassification);
+router.post(
+  "/filter-classification",
+  ClassificationController.getClassificationByFilter
+);
+router.delete(
+  "/classification/:classificationId",
+  ClassificationController.deleteClassification
+);
 
 module.exports = router;
