@@ -14,55 +14,78 @@ import { CabinetPage } from "../pages/CabinetPage";
 import { TenantPage } from "../pages/TenantPage";
 import { GroupPage } from "../pages/GroupPage";
 import { ClassificationPage } from "../pages/ClassificationPage";
+import { z } from "zod";
+import { StructurePage } from "../pages/StructurePage";
 
 // 1. Buat root route
 const rootRoute = createRootRoute();
 
+// 2. Route untuk layout protected (butuh login)
 const protectedLayout = createRoute({
   getParentRoute: () => rootRoute,
   id: "protected-layout",
   component: ProtectedRoute,
 });
-// 2. Buat layout route (misalnya layout utama untuk halaman dalam login)
+
+// 3. Layout utama setelah login
 const layoutRoute = createRoute({
   getParentRoute: () => protectedLayout,
   id: "layout-root",
   component: LayoutRoot,
 });
 
-// 3. Daftar halaman di bawah layoutRoute
-const layoutChildrenRoutes = [
-  {
-    path: "/",
-    component: DashboardPage,
-  },
-  {
-    path: "/cabinets",
-    component: CabinetPage,
-  },
-  {
-    path: "/classifications",
-    component: ClassificationPage,
-  },
-  {
-    path: "/tenants",
-    component: TenantPage,
-  },
-  {
-    path: "/groups",
-    component: GroupPage,
-  },
-  {
-    path: "/users",
-    component: Userpage,
-  },
-].map(({ path, component }) =>
-  createRoute({
-    getParentRoute: () => layoutRoute,
-    path,
-    component,
-  })
-);
+// 4. Daftar halaman di bawah layoutRoute secara eksplisit
+const dashboardRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/",
+  component: DashboardPage,
+});
+
+const cabinetsRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "cabinets",
+  component: CabinetPage,
+});
+
+const classificationsRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "classifications",
+  component: ClassificationPage,
+});
+
+const tenantsRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "tenants",
+  component: TenantPage,
+});
+
+const groupsRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "groups",
+  component: GroupPage,
+});
+
+const usersRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "users",
+  component: Userpage,
+});
+
+const structureRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "structure",
+  component: StructurePage,
+  validateSearch: z.object({
+    classificationId: z.coerce.number().optional(),
+  }),
+});
+
+// 5. Route login & not found
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: Login,
+});
 
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -70,20 +93,25 @@ const notFoundRoute = createRoute({
   component: ErrorPage,
 });
 
-const login = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/login",
-  component: Login,
-});
-
-// 4. Tambahkan semua routes ke dalam rootRoute
+// 6. Susun pohon route
 const routeTree = rootRoute.addChildren([
-  protectedLayout.addChildren([layoutRoute.addChildren(layoutChildrenRoutes)]),
-  login,
+  protectedLayout.addChildren([
+    layoutRoute.addChildren([
+      dashboardRoute,
+      cabinetsRoute,
+      classificationsRoute,
+      tenantsRoute,
+      groupsRoute,
+      usersRoute,
+      structureRoute,
+    ]),
+  ]),
+  loginRoute,
   notFoundRoute,
 ]);
 
-// 5. Export router
+// 7. Buat router instance
 export const router = createRouter({
   routeTree,
+  defaultNotFoundComponent: ErrorPage,
 });

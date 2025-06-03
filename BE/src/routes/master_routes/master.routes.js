@@ -6,6 +6,7 @@ const GroupController = require("../../controllers/master_controller/GroupContro
 const TenantController = require("../../controllers/master_controller/TenantController");
 const CabinetController = require("../../controllers/master_controller/CabinetController");
 const ClassificationController = require("../../controllers/master_controller/ClassificationController");
+const StructureController = require("../../controllers/master_controller/StructureController");
 
 // ROUTES USERS
 router.post("/register", UserController.registrasi);
@@ -54,5 +55,14 @@ router.delete(
   "/classification/:classificationId",
   ClassificationController.deleteClassification
 );
+
+// STRUCTRUE
+router.get(
+  "/structures/:classificationId",
+  StructureController.getAllStructureByClassification
+);
+router.post("/structure", StructureController.insertStructure);
+router.put("/structure/:structureID", StructureController.updateStructure);
+router.get("/typedata", StructureController.getAllTypeData);
 
 module.exports = router;

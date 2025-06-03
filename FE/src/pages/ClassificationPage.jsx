@@ -96,7 +96,7 @@ export function ClassificationPage() {
             onChange={(e) => handleOnChangeSearh(e)}
             placeholder="Search name or description ..."
           />
-          <div className="status cursor-pointer"></div>
+
           <div className="addTenant">
             <Button
               onClick={() => handleOpenModal("ADD", null)}

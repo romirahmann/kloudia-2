@@ -3,7 +3,6 @@ import { useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { FaEdit, FaCheck } from "react-icons/fa";
 import { Table } from "../../shared/Table";
-import { Tooltip } from "react-tooltip";
 import { MdBlock, MdDeleteForever } from "react-icons/md";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Link } from "@tanstack/react-router";
@@ -16,7 +15,8 @@ function ActionDropdown({ position, row, onClose, onAction }) {
       className="absolute z-50 bg-white border rounded shadow-md p-2 flex flex-col gap-1"
     >
       <Link
-        to={"/"}
+        to={"/structure"}
+        search={{ classificationId: row.classificationId }}
         className="flex items-center gap-2 text-blue-600 text-sm hover:bg-gray-100 px-2 py-1 rounded"
       >
         <GrView /> View

@@ -11,21 +11,10 @@ const createClassification = api.catchAsync(async (req, res) => {
   let data = req.body;
 
   let result = await modelClassification.insert(data);
-  const tabelNameStructure = `tbl_structure${result[0]}`;
-
-  let isExistsStructure = await modelClassification.isExistsStructure(
-    tabelNameStructure
-  );
-
-  if (isExistsStructure) return api.error(res, "Structure already exists");
-
-  let resultStructure = await modelClassification.createStrucutre(
-    tabelNameStructure
-  );
 
   emit("add_classification", 200);
 
-  return api.success(res, resultStructure);
+  return api.success(res, result);
 });
 
 const updateClassification = api.catchAsync(async (req, res) => {
