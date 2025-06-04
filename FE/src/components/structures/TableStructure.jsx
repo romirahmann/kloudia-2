@@ -1,12 +1,14 @@
+import { FaEdit } from "react-icons/fa";
 import { Table } from "../../shared/Table";
+import { Tooltip } from "react-tooltip";
+import { MdDeleteForever } from "react-icons/md";
 
 /* eslint-disable no-unused-vars */
 export function TableStructure({ actionTable, data }) {
   const columns = [
     { header: "Name", key: "structureName" },
-    { header: "Classification Name", key: "classificationName" },
     { header: "Field Size", key: "fieldSize" },
-    { header: "Type Data", key: "typeCode" },
+    { header: "Type Data", key: "typeName" },
   ];
 
   const renderActions = (row, index) => {
@@ -26,22 +28,6 @@ export function TableStructure({ actionTable, data }) {
             className="z-50 bg-gray-800 text-white text-xs px-2 py-1 rounded"
           />
         </button>
-        {row?.isActive === 1 && (
-          <button
-            data-tooltip-id={`nonaktif-${index}`}
-            data-tooltip-content="Nonaktif"
-            onClick={() => actionTable({ type: "NONAKTIF", data: row })}
-            className="text-yellow-600 text-xl"
-          >
-            <MdBlock />
-            <Tooltip
-              id={`nonaktif-${index}`}
-              place="top"
-              closeOnClick
-              className="z-50 bg-gray-800 text-white text-xs px-2 py-1 rounded"
-            />
-          </button>
-        )}
 
         <button
           data-tooltip-id={`delete-${index}`}

@@ -42,6 +42,10 @@ router.delete("/cabinet/:cabinetId", CabinetController.deleteCabinet);
 
 // CLASSIFICATIONS
 router.get("/classifications", ClassificationController.getAllClassification);
+router.get(
+  "/classification/:classificationId",
+  ClassificationController.getClassificationId
+);
 router.put(
   "/classification/:classificationId",
   ClassificationController.updateClassification
@@ -64,5 +68,6 @@ router.get(
 router.post("/structure", StructureController.insertStructure);
 router.put("/structure/:structureID", StructureController.updateStructure);
 router.get("/typedata", StructureController.getAllTypeData);
+router.delete("/structure/:structureId", StructureController.deleteStructure);
 
 module.exports = router;

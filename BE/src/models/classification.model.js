@@ -16,6 +16,22 @@ const getAll = async () =>
     .from("tbl_classification as cl")
     .join("tbl_cabinets as ca", "cl.cabinetId", "ca.cabinetId");
 
+const byID = async (classificationId) =>
+  db
+    .select(
+      "cl.classificationId",
+      "cl.classificationName",
+      "cl.classificationDescription",
+      "cl.cabinetId",
+      "cl.createdAt",
+      "cl.updateAt",
+      "cl.isActive",
+      "ca.cabinetName"
+    )
+    .from("tbl_classification as cl")
+    .join("tbl_cabinets as ca", "cl.cabinetId", "ca.cabinetId")
+    .where("cl.classificationId", classificationId)
+    .first();
 const insert = async (data) => db("tbl_classification").insert(data);
 const update = async (classificationId, data) =>
   db("tbl_classification").where({ classificationId }).update(data);
@@ -81,4 +97,5 @@ module.exports = {
   createStrucutre,
   deleteStructure,
   byFilter,
+  byID,
 };

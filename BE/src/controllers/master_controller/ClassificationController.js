@@ -6,6 +6,11 @@ const getAllClassification = api.catchAsync(async (req, res) => {
   let result = await modelClassification.getAll();
   return api.success(res, result);
 });
+const getClassificationId = api.catchAsync(async (req, res) => {
+  const { classificationId } = req.params;
+  let result = await modelClassification.byID(classificationId);
+  return api.success(res, result);
+});
 
 const createClassification = api.catchAsync(async (req, res) => {
   let data = req.body;
@@ -46,4 +51,5 @@ module.exports = {
   updateClassification,
   deleteClassification,
   getClassificationByFilter,
+  getClassificationId,
 };

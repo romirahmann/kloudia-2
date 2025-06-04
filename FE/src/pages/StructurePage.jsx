@@ -2,16 +2,20 @@ import { useEffect, useState } from "react";
 import { TableStructure } from "../components/structures/TableStructure";
 import { Search } from "../shared/Search";
 import api from "../services/axios.service";
-import { useSearch } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { Button } from "../shared/Button";
-import { FaPlus } from "react-icons/fa";
-import { ModalClassification } from "../components/classifications/ModalClassification";
+import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { AnimatePresence } from "motion/react";
 import { ModalStructure } from "../components/structures/ModalStructure";
+import { HiClipboardDocumentList } from "react-icons/hi2";
+import { listenToUpdate } from "../services/socket.service";
+import { AlertMessage } from "../shared/Alert";
 
 /* eslint-disable no-unused-vars */
 export function StructurePage() {
   const [structures, setStructure] = useState([]);
+  const [classification, setClasification] = useState([]);
+
   const [modal, setModal] = useState({
     open: false,
     type: null,
@@ -29,11 +33,32 @@ export function StructurePage() {
   useEffect(() => {
     fetchStructure();
   }, []);
+  useEffect(() => {
+    fetchClassification();
+  }, []);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      fetchStructure();
+    };
+    listenToUpdate("Add_Structure", handleUpdate);
+    listenToUpdate("Update_Structure", handleUpdate);
+    listenToUpdate("Delete_Structure", handleUpdate);
+  }, []);
+
+  const fetchClassification = async () => {
+    try {
+      let res = await api.get(`/master/classification/${classificationId}`);
+      setClasification(res.data.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
   const fetchStructure = async () => {
     try {
-      let result = await api.get(`/master/structures/${classificationId}`);
-      setStructure(result.data.data);
+      let res = await api.get(`/master/structures/${classificationId}`);
+      setStructure(res.data.data);
     } catch (error) {
       console.log(error.response);
     }
@@ -46,8 +71,38 @@ export function StructurePage() {
   };
   return (
     <>
+      <div className="btn-back mb-2 p-3 ">
+        <Link
+          to={"/classifications"}
+          className="flex items-center gap-2 text-primary dark:text-gray-50  "
+        >
+          <FaArrowLeft className="text-2xl" /> <span>Back</span>
+        </Link>
+      </div>
+      <div className="classification py-4 px-6 bg-white dark:bg-gray-950 rounded-lg mb-5">
+        <div className="title flex text-gray-800 dark:text-gray-100 items-center text-2xl md:text-3xl font-bold my-5 gap-2">
+          <HiClipboardDocumentList />
+          <h1>Classification Detail</h1>
+        </div>
+        <div className="grid md:gap-2 text-gray-800 dark:text-gray-100">
+          <div className="md:flex md:gap-2 text-xs md:text-lg">
+            <span className=" font-bold ">Classification Name</span>
+            <span>:</span>
+            <span className="font-medium">
+              {classification?.classificationName}
+            </span>
+          </div>
+          <div className="md:flex md:gap-2 text-xs md:text-lg">
+            <span className=" font-bold">Classification Description</span>
+            <span>:</span>
+            <span className="font-medium">
+              {classification?.classificationDescription}
+            </span>
+          </div>
+        </div>
+      </div>
       <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md p-9">
-        <div className="filter flex items-center gap-2">
+        <div className="filter flex items-center mt-10 gap-2">
           <Search
             onChange={(e) => handleOnChangeFilter(e)}
             placeholder="Search structure name,  ..."

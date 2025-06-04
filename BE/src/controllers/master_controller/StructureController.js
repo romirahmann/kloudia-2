@@ -9,15 +9,29 @@ const getAllStructure = api.catchAsync(async (req, res) => {
 
 const getAllStructureByClassification = api.catchAsync(async (req, res) => {
   const { classificationId } = req.params;
-  console.log(classificationId);
+
   const result = await modelStructure.getByClassificationId(classificationId);
   return api.success(res, result);
 });
 
 const insertStructure = api.catchAsync(async (req, res) => {
   const data = req.body;
-  const result = await modelStructure.insert(data);
-  emit("ADD_STRUCTURE", 200);
+
+  console.log(data);
+
+  let tableName = `tbl_detail${data.classificationId}`;
+  await modelStructure.insert(data);
+  const tablNameIsExist = await modelStructure.detailIsExist(tableName);
+
+  if (tablNameIsExist) {
+    await modelStructure.createColoumn(tableName, data);
+    emit("Add_Structure", 200);
+    return api.success(res, "Add Successfully");
+  }
+
+  await modelStructure.createDetail(tableName, data);
+
+  emit("Add_Structure", 200);
   return api.success(res, result);
 });
 
@@ -26,7 +40,15 @@ const updateStructure = api.catchAsync(async (req, res) => {
   const data = req.body;
 
   const result = await modelStructure.update(structureID, data);
-  emit("UPDATE_STRUCTURE", 200);
+  emit("Update_Structure", 200);
+  return api.success(res, result);
+});
+
+const deleteStructure = api.catchAsync(async (req, res) => {
+  const { structureId } = req.params;
+
+  const result = await modelStructure.remove(structureId);
+  emit("Delete_Structure", 200);
   return api.success(res, result);
 });
 
@@ -42,4 +64,5 @@ module.exports = {
   updateStructure,
   getAllStructureByClassification,
   getAllTypeData,
+  deleteStructure,
 };
