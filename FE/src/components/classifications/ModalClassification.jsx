@@ -70,7 +70,25 @@ export function ModalClassification({ modal, onClose, setAlert }) {
       });
     }
   };
-  const handleDelete = async (newData) => {};
+  const handleDelete = async () => {
+    try {
+      await api.delete(`/master/classification/${data.classificationId}`);
+
+      setAlert({
+        show: true,
+        message: "Classification deleted successfully!",
+        type: "success",
+      });
+      onClose();
+    } catch (error) {
+      console.log(error.response);
+      setAlert({
+        show: true,
+        message: "Classification deleted failure!",
+        type: "error",
+      });
+    }
+  };
   const onNonaktif = async () => {
     try {
       await api.put(`/master/classification/${data.classificationId}`, {

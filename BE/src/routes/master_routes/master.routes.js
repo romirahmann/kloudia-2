@@ -66,7 +66,7 @@ router.get(
   StructureController.getAllStructureByClassification
 );
 router.post("/structure", StructureController.insertStructure);
-router.put("/structure/:structureID", StructureController.updateStructure);
+router.put("/structure/:structureId", StructureController.updateStructure);
 router.get("/typedata", StructureController.getAllTypeData);
 router.delete("/structure/:structureId", StructureController.deleteStructure);
 

@@ -82,9 +82,10 @@ const createStrucutre = async (tableName) =>
     table.integer("fieldSize").nullable();
   });
 
-const deleteStructure = async (tableName) =>
-  await db.schema.dropTable(tableName);
-// detail
+const deleteStructure = async (classificationId) =>
+  db("tbl_structure").where({ classificationId }).del();
+
+const deleteDetail = async (tableName) => await db.schema.dropTable(tableName);
 
 // type data
 
@@ -98,4 +99,5 @@ module.exports = {
   deleteStructure,
   byFilter,
   byID,
+  deleteDetail,
 };

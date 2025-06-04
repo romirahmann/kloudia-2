@@ -5,6 +5,7 @@ import { Modal } from "../../shared/Modal";
 import api from "../../services/axios.service";
 import { AddStructure } from "./modal/AddStructure";
 import { DeleteComponent } from "../../shared/DeleteComponent";
+import { EditStructure } from "./modal/EditStructure";
 
 export function ModalStructure({ modal, onClose, setAlert, classificationId }) {
   const [typeData, setTypeData] = useState([]);
@@ -47,10 +48,26 @@ export function ModalStructure({ modal, onClose, setAlert, classificationId }) {
       });
     }
   };
-  const handleEdit = async () => {};
+  const handleEdit = async (newData) => {
+    try {
+      await api.put(`/master/structure/${data.structureId}`, newData);
+      setAlert({
+        show: true,
+        message: "Structure updated successfully",
+        type: "success",
+      });
+      onClose();
+    } catch (error) {
+      console.log(error.response);
+      setAlert({
+        show: true,
+        message: "Structure updated failed",
+        type: "error",
+      });
+    }
+  };
 
   const handleDelete = async () => {
-    console.log(data);
     try {
       await api.delete(`/master/structure/${data.structureId}`);
       setAlert({
@@ -73,12 +90,18 @@ export function ModalStructure({ modal, onClose, setAlert, classificationId }) {
     ADD: (
       <AddStructure
         typeData={typeData}
-        onClose={onClose}
         onAdd={handleAdd}
         classificationId={classificationId}
       />
     ),
-    EDIT: "Edit Classification",
+    EDIT: (
+      <EditStructure
+        onEdit={handleEdit}
+        typeData={typeData}
+        classificationId={classificationId}
+        data={data}
+      />
+    ),
     DELETE: <DeleteComponent onDelete={handleDelete} onClose={onClose} />,
   };
 

@@ -32,10 +32,15 @@ const updateClassification = api.catchAsync(async (req, res) => {
 
 const deleteClassification = api.catchAsync(async (req, res) => {
   let { classificationId } = req.params;
-  const tableNameStructure = `tbl_structure${classificationId}`;
-  await modelClassification.deleteStructure(tableNameStructure);
+  const tableNameDetail = `tbl_detail${classificationId}`;
+
+  await modelClassification.deleteDetail(tableNameDetail);
+  await modelClassification.deleteStructure(classificationId);
+
   let result = await modelClassification.deleteId(classificationId);
+
   emit("delete_classification", 200);
+
   return api.success(res, result);
 });
 

@@ -71,7 +71,7 @@ export function StructurePage() {
   };
   return (
     <>
-      <div className="btn-back mb-2 p-3 ">
+      <div className="btn-back  w-[5em] mb-2 p-3 ">
         <Link
           to={"/classifications"}
           className="flex items-center gap-2 text-primary dark:text-gray-50  "
