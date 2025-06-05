@@ -7,6 +7,8 @@ const TenantController = require("../../controllers/master_controller/TenantCont
 const CabinetController = require("../../controllers/master_controller/CabinetController");
 const ClassificationController = require("../../controllers/master_controller/ClassificationController");
 const StructureController = require("../../controllers/master_controller/StructureController");
+const DocumentController = require("../../controllers/master_controller/DocumentController");
+const upload = require("../../services/upload.service");
 
 // ROUTES USERS
 router.post("/register", UserController.registrasi);
@@ -23,6 +25,7 @@ router.post("/validate-otp", UserController.validateOtp);
 // GROUP
 router.get("/groups", GroupController.getAllGroup);
 router.get("/group/:grupId", GroupController.getGroupById);
+router.post("/group", GroupController.createGroup);
 router.put("/group/:grupId", GroupController.updateGroup);
 router.delete("/group/:grupId", GroupController.deleteGroup);
 
@@ -69,5 +72,13 @@ router.post("/structure", StructureController.insertStructure);
 router.put("/structure/:structureId", StructureController.updateStructure);
 router.get("/typedata", StructureController.getAllTypeData);
 router.delete("/structure/:structureId", StructureController.deleteStructure);
+
+// DOCUMETNS
+router.post(
+  "/upload-document",
+  upload.single("file"),
+  DocumentController.uploadDocument
+);
+router.get("/get-file", DocumentController.getFile);
 
 module.exports = router;

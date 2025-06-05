@@ -58,7 +58,14 @@ export const sidebarMenu = [
       {
         id: "4-1",
         name: "users",
-        path: "/users",
+        path: "/setting/users",
+        titleName: "LIST USERS",
+        titleDesc: "User list details",
+      },
+      {
+        id: "4-2",
+        name: "groups",
+        path: "/setting/groups",
         titleName: "LIST USERS",
         titleDesc: "User list details",
       },

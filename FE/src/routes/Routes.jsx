@@ -61,13 +61,13 @@ const tenantsRoute = createRoute({
 
 const groupsRoute = createRoute({
   getParentRoute: () => layoutRoute,
-  path: "groups",
+  path: "setting/groups",
   component: GroupPage,
 });
 
 const usersRoute = createRoute({
   getParentRoute: () => layoutRoute,
-  path: "users",
+  path: "setting/users",
   component: Userpage,
 });
 
