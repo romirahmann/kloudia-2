@@ -16,6 +16,7 @@ import { useNavigate } from "@tanstack/react-router";
 export function DocumentsPage() {
   const [classifications, setClassification] = useState([]);
   const [selectedClassification, setSelectedClassification] = useState("");
+  const [dataDetail, setDataDetail] = useState([]);
   const navigate = useNavigate();
   const [modal, setModal] = useState({
     open: false,
@@ -30,8 +31,27 @@ export function DocumentsPage() {
   });
 
   useEffect(() => {
+    fetchDetail();
+  }, [selectedClassification]);
+
+  useEffect(() => {
     fetchClassification();
   }, []);
+
+  const fetchDetail = async () => {
+    if (selectedClassification) {
+      try {
+        const res = await api.get(
+          `/master/details/${selectedClassification.classificationId}`
+        );
+        console.log(res.data.data);
+        setDataDetail(res.data.data);
+      } catch (error) {
+        console.log(error.response);
+      }
+    }
+    return;
+  };
 
   const fetchClassification = async () => {
     try {
@@ -45,10 +65,14 @@ export function DocumentsPage() {
 
   const handleAction = (type) => {
     if (!selectedClassification) {
-      console.log("Pilih dulu dokumen!");
+      setShowAlert({
+        show: true,
+        message: "Choose your document first",
+        type: "warning",
+      });
       return;
     }
-    console.log(selectedClassification);
+
     switch (type) {
       case "ADD":
         navigate({
@@ -67,15 +91,15 @@ export function DocumentsPage() {
   return (
     <>
       <div className="max-w-full rounded-md ">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-1 md:gap-3 ">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-1 md:gap-3 ">
           {/* HEADER NAVIGASI */}
           <div className="grid1 w-full col-span-1 ">
-            <div className="text-2xl text-center font-bold border border-gray-600/30 py-6 px-5 dark:text-gray-200 dark:bg-gray-950 bg-white rounded-lg">
+            <div className="text-2xl text-center font-bold border border-gray-600/30 py-5 px-5 dark:text-gray-200 dark:bg-gray-950 bg-white rounded-lg">
               <h1>DOCUMENTS</h1>
             </div>
           </div>
           {/* HEADER CONTENT */}
-          <div className="grid2 col-span-3 content-center">
+          <div className="grid2 col-span-5 content-center">
             <div className="grid2 col-span-3 content-center">
               <div className="header-content font-bold border border-gray-600/30 px-2 py-5 md:py-3 md:px-5 rounded-lg bg-white dark:bg-gray-950 dark:text-gray-200 flex flex-col md:flex-row justify-between gap-3 md:gap-2">
                 <div className="title flex items-center order-1  md:order-2">
@@ -109,16 +133,16 @@ export function DocumentsPage() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 md:gap-3 mt-2 ">
+        <div className="grid grid-cols-1 md:grid-cols-6 md:gap-3 mt-2 ">
           {/* BODY NAVIGASI */}
-          <div className="grid1 col-span-1 border border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm flex flex-col justify-center gap-2 px-10">
+          <div className="grid1 col-span-1 border border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm flex flex-col justify-center gap-2 px-8">
             {classifications &&
               classifications.map((classification) => {
                 return (
                   <button
                     onClick={() => setSelectedClassification(classification)}
                   >
-                    <div className="flex items-center gap-2 text-xl hover:text-primary">
+                    <div className="flex items-center gap-2 text-md hover:text-primary">
                       <FaFolder />
                       <h1> {classification?.classificationName} </h1>
                     </div>
@@ -127,9 +151,10 @@ export function DocumentsPage() {
               })}
           </div>
           {/* BODY CONTENT */}
-          <div className="grid2  col-span-3 border border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm p-3">
+          <div className="grid2 col-span-5 border border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm p-3">
             <TableDocument
               classificationId={selectedClassification.classificationId}
+              data={dataDetail}
             />
           </div>
         </div>

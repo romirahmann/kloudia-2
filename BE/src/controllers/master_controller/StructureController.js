@@ -1,3 +1,4 @@
+const { default: camelcase } = require("camelcase");
 const modelStructure = require("../../models/structure.model");
 const { emit } = require("../../services/socket.service");
 const api = require("../../tools/common");
@@ -17,8 +18,11 @@ const getAllStructureByClassification = api.catchAsync(async (req, res) => {
 const insertStructure = api.catchAsync(async (req, res) => {
   const data = req.body;
 
-  let tableName = `tbl_detail${data.classificationId}`;
+  data.structureDescription = camelcase(data.structureName);
+
   await modelStructure.insert(data);
+
+  let tableName = `tbl_detail${data.classificationId}`;
   const tablNameIsExist = await modelStructure.detailIsExist(tableName);
 
   if (tablNameIsExist) {
@@ -55,13 +59,22 @@ const deleteStructure = api.catchAsync(async (req, res) => {
   if (!structure) return api.error(res, "Structure Not Found!", 404);
 
   let tableName = `tbl_detail${structure.classificationId}`;
-  let coloumnName = structure.structureName;
+  let coloumnName = structure.structureDescription;
 
   await modelStructure.remove(structureId);
   await modelStructure.deleteFieldDetail(tableName, coloumnName);
 
   emit("Delete_Structure", 200);
   return api.success(res, "Successfully!");
+});
+
+const getAllDetail = api.catchAsync(async (req, res) => {
+  const { classificationId } = req.params;
+  if (!classificationId) return api.error(res, "Invalid Classification", 401);
+  const tableName = `tbl_detail${classificationId}`;
+
+  let data = await modelStructure.getAllDetail(tableName);
+  return api.success(res, data);
 });
 
 // TYPE DATA
@@ -77,4 +90,5 @@ module.exports = {
   getAllStructureByClassification,
   getAllTypeData,
   deleteStructure,
+  getAllDetail,
 };

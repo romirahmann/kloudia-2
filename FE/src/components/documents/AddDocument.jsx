@@ -7,6 +7,7 @@ import api from "../../services/axios.service";
 import { Form } from "../../shared/Form";
 import { Input } from "../../shared/Input";
 import { Button } from "../../shared/Button";
+import moment from "moment";
 
 export function AddDocument() {
   const { classificationId } = useSearch({});
@@ -23,10 +24,10 @@ export function AddDocument() {
     try {
       const res = await api.get(`/master/structures/${classificationId}`);
       setStructures(res.data.data);
-
+      // console.log(res.data.data);
       const initialData = {};
       res.data.data.forEach((item) => {
-        initialData[item.structureName] = "";
+        initialData[item.structureDescription] = "";
       });
       setFormData(initialData);
     } catch (error) {
@@ -36,7 +37,6 @@ export function AddDocument() {
 
   const handleOnChange = (e) => {
     const { name, value, type, files } = e.target;
-    console.log(files);
 
     if (type === "file") {
       setFormData((prev) => ({
@@ -55,15 +55,22 @@ export function AddDocument() {
     e.preventDefault();
 
     const data = new FormData();
-    for (const key in formData) {
-      data.append(key, formData[key]);
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
+
+    data.append("classificationId", classificationId);
+
+    for (let pair of data.entries()) {
+      console.log(pair[0], pair[1]);
     }
 
-    // Contoh POST ke backend
-
-    // try{} catch(error){
-    //     console.log(error.resp)
-    // }
+    try {
+      const res = await api.post("/master/upload-document", data);
+      console.log(res.data.data);
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+    }
   };
 
   return (
@@ -86,13 +93,24 @@ export function AddDocument() {
             {structures &&
               structures.map((item, index) => (
                 <div key={index}>
-                  <Input
-                    id={item.structureName}
-                    label={item.structureName}
-                    name={item.structureName}
-                    placeholder={item.structureName}
-                    onChange={handleOnChange}
-                  />
+                  {item.typeId === 3 ? (
+                    <Input
+                      id={item.structureDescription}
+                      label={item.structureName}
+                      name={item.structureDescription}
+                      type="date"
+                      placeholder={item.structureName}
+                      onChange={handleOnChange}
+                    />
+                  ) : (
+                    <Input
+                      id={item.structureDescription}
+                      label={item.structureName}
+                      name={item.structureDescription}
+                      placeholder={item.structureName}
+                      onChange={handleOnChange}
+                    />
+                  )}
                 </div>
               ))}
 

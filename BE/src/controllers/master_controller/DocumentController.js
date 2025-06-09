@@ -3,10 +3,15 @@ const api = require("../../tools/common");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
+const modelStructure = require("../../models/structure.model");
 
 const uploadDocument = api.catchAsync(async (req, res) => {
   const file = req.file;
-  console.log(file);
+  const data = req.body;
+  const tableName = `tbl_detail${data.classificationId}`;
+  console.log("file: ", file);
+  console.log("data: ", data);
+  console.log("tableName: ", tableName);
   if (!file) return api.error(res, "No file uploaded", 401);
 
   const inputPath = file.path;
@@ -17,6 +22,8 @@ const uploadDocument = api.catchAsync(async (req, res) => {
 
   // Hapus file asli
   fs.unlinkSync(inputPath);
+
+  await modelStructure.insertDetail(tableName, data);
 
   return api.success(res, {
     message: "Upload & encryption success",

@@ -6,6 +6,7 @@ const getAll = async () =>
       "s.structureId",
       "s.classificationId",
       "s.structureName",
+      "s.structureDescription",
       "s.fieldSize",
       "s.typeId",
       "c.classificatioName",
@@ -22,6 +23,7 @@ const getById = async (structuredId) =>
       "s.structureId",
       "s.classificationId",
       "s.structureName",
+      "s.structureDescription",
       "s.fieldSize",
       "s.typeId",
       "c.classificationName",
@@ -40,6 +42,7 @@ const getByClassificationId = async (classificationId) =>
       "s.structureId",
       "s.classificationId",
       "s.structureName",
+      "s.structureDescription",
       "s.fieldSize",
       "s.typeId",
       "c.classificationName",
@@ -56,23 +59,27 @@ const update = async (structureId, data) =>
   db("tbl_structure").update(data).where({ structureId });
 const remove = async (structureId) =>
   db("tbl_structure").del().where({ structureId });
+
+// DETAIL
+const getAllDetail = async (tableName) => db.select("*").from(tableName);
 const detailIsExist = async (tableName) => db.schema.hasTable(tableName);
 
 const createDetail = async (tableName, data) =>
   db.schema.createTable(tableName, (table) => {
     table.increments("detailId").primary();
+    table.integer("documentId");
     switch (parseInt(data.typeId)) {
       case 1: // Integer
-        table.integer(data.structureName);
+        table.integer(data.structureDescription);
         break;
       case 2: // String
-        table.string(data.structureName, 255);
+        table.string(data.structureDescription, 255);
         break;
       case 3: // Boolean
-        table.boolean(data.structureName);
+        table.boolean(data.structureDescription);
         break;
       case 4: // DateTime
-        table.dateTime(data.structureName);
+        table.dateTime(data.structureDescription);
         break;
       default:
         throw new Error(`Tipe data tidak dikenali: ${typeId}`);
@@ -85,16 +92,16 @@ const createColoumn = async (tableName, data) =>
   await db.schema.alterTable(tableName, (table) => {
     switch (parseInt(data.typeId)) {
       case 1: // Integer
-        table.integer(data.structureName);
+        table.integer(data.structureDescription);
         break;
       case 2: // String
-        table.string(data.structureName, 255);
+        table.string(data.structureDescription, 255);
         break;
       case 3: // Boolean
-        table.boolean(data.structureName);
+        table.boolean(data.structureDescription);
         break;
       case 4: // DateTime
-        table.dateTime(data.structureName);
+        table.dateTime(data.structureDescription);
         break;
       default:
         throw new Error(`Tipe data tidak dikenali: ${typeId}`);
@@ -102,9 +109,12 @@ const createColoumn = async (tableName, data) =>
   });
 
 const updateColumn = async (tableName, oldData, newData) => {
-  if (newData.structureName !== oldData.structureName) {
+  if (newData.structureDescription !== oldData.structureDescription) {
     await db.schema.alterTable(tableName, (table) => {
-      table.renameColumn(oldData.structureName, newData.structureName);
+      table.renameColumn(
+        oldData.structureDescription,
+        newData.structureDescription
+      );
     });
   }
 
@@ -112,16 +122,16 @@ const updateColumn = async (tableName, oldData, newData) => {
     await db.schema.alterTable(tableName, (table) => {
       switch (parseInt(newData.typeId)) {
         case 1: // Integer
-          table.integer(newData.structureName).alter();
+          table.integer(newData.structureDescription).alter();
           break;
         case 2: // String
-          table.string(newData.structureName, 255).alter();
+          table.string(newData.structureDescription, 255).alter();
           break;
         case 3: // Boolean
-          table.boolean(newData.structureName).alter();
+          table.boolean(newData.structureDescription).alter();
           break;
         case 4: // DateTime
-          table.dateTime(newData.structureName).alter();
+          table.dateTime(newData.structureDescription).alter();
           break;
         default:
           throw new Error(`Tipe data tidak dikenali: ${newData.typeId}`);
@@ -134,6 +144,25 @@ const deleteFieldDetail = async (tableName, coloumnName) =>
   db.schema.table(tableName, (table) => {
     table.dropColumn(coloumnName);
   });
+
+const getColumns = async (tableName) => {
+  const result = await db.raw(`SHOW COLUMNS FROM ??`, [tableName]);
+  return result[0].map((row) => row.Field);
+};
+
+const insertDetail = async (tableName, data) => {
+  const columns = await getColumns(tableName);
+
+  // Filter data keys yang ada di columns tabel
+  const filteredData = {};
+  Object.entries(data).forEach(([key, value]) => {
+    if (columns.includes(key)) {
+      filteredData[key] = value;
+    }
+  });
+
+  return db(tableName).insert(filteredData);
+};
 
 // type data
 const getAllType = async () => db.select("*").from("tbl_typedata");
@@ -151,4 +180,6 @@ module.exports = {
   deleteFieldDetail,
   getById,
   updateColumn,
+  insertDetail,
+  getAllDetail,
 };

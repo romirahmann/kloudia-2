@@ -73,6 +73,9 @@ router.put("/structure/:structureId", StructureController.updateStructure);
 router.get("/typedata", StructureController.getAllTypeData);
 router.delete("/structure/:structureId", StructureController.deleteStructure);
 
+// DETAIL
+router.get("/details/:classificationId", StructureController.getAllDetail);
+
 // DOCUMETNS
 router.post(
   "/upload-document",

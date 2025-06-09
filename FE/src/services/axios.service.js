@@ -4,9 +4,6 @@ import { apiUrl } from "./api.service";
 
 const api = axios.create({
   baseURL: apiUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 api.interceptors.request.use(

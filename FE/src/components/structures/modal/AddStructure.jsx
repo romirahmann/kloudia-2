@@ -21,7 +21,9 @@ export function AddStructure({ typeData, onAdd, classificationId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    if (parseInt(formData.typeId) === 2) {
+      formData.fieldSize = 255;
+    }
     onAdd(formData);
   };
 

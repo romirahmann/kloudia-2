@@ -24,13 +24,13 @@ export function DeleteComponent({ onDelete, onClose }) {
         <div className="btn flex justify-end gap-2">
           <Button
             onClick={onClose}
-            className="bg-transparent border border-gray-700 rounded-md text-gray-900"
+            className="px-4 py-2 bg-transparent border border-gray-700 rounded-md text-gray-900"
           >
             Cancel
           </Button>
           <Button
             onClick={onDelete}
-            className="bg-red-700 hover:bg-red-600 rounded-md text-white"
+            className="px-4 py-2 bg-red-700 hover:bg-red-600 rounded-md text-white"
           >
             Delete
           </Button>
