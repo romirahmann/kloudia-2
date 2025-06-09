@@ -37,9 +37,9 @@ export function GroupPage() {
     const handleUpdate = () => {
       fetchGroups();
     };
-    listenToUpdate("add_Group", handleUpdate);
-    listenToUpdate("update_Group", handleUpdate);
-    listenToUpdate("delete_Group", handleUpdate);
+    listenToUpdate("Add_Group", handleUpdate);
+    listenToUpdate("Update_Group", handleUpdate);
+    listenToUpdate("Delete_Group", handleUpdate);
   }, []);
 
   // FETCH CLASSIFICATION

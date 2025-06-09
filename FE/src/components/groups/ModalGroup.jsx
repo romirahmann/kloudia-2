@@ -1,6 +1,8 @@
 import api from "../../services/axios.service";
 import { DeleteComponent } from "../../shared/DeleteComponent";
 import { Modal } from "../../shared/Modal";
+import { AddGroupComponent } from "./modal/AddGroup";
+import { EditGroupComponent } from "./modal/EditGroup";
 
 /* eslint-disable no-unused-vars */
 export function ModalGroup({ modal, onClose, setAlert }) {
@@ -14,6 +16,7 @@ export function ModalGroup({ modal, onClose, setAlert }) {
 
   const handleAdd = async (newData) => {
     try {
+      console.log(newData);
       await api.post("/master/group", newData);
       setAlert({
         show: true,
@@ -31,7 +34,7 @@ export function ModalGroup({ modal, onClose, setAlert }) {
   };
   const handleEdit = async (newData) => {
     try {
-      await api.post(`/master/group/${data.grupId}`, newData);
+      await api.put(`/master/group/${data.grupId}`, newData);
       setAlert({
         show: true,
         message: "Group edit successfully",
@@ -65,8 +68,8 @@ export function ModalGroup({ modal, onClose, setAlert }) {
   };
 
   const renderForm = {
-    ADD: "ADD",
-    EDIT: "EDIT",
+    ADD: <AddGroupComponent onAdd={handleAdd} />,
+    EDIT: <EditGroupComponent onUpdate={handleEdit} data={data} />,
     DELETE: <DeleteComponent onDelete={handleDelete} onClose={onClose} />,
   };
 

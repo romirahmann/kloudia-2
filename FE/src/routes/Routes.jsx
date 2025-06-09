@@ -16,6 +16,8 @@ import { GroupPage } from "../pages/GroupPage";
 import { ClassificationPage } from "../pages/ClassificationPage";
 import { z } from "zod";
 import { StructurePage } from "../pages/StructurePage";
+import { DocumentsPage } from "../pages/DocumentsPage";
+import { AddDocument } from "../components/documents/AddDocument";
 
 // 1. Buat root route
 const rootRoute = createRootRoute();
@@ -80,6 +82,21 @@ const structureRoute = createRoute({
   }),
 });
 
+const documentRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "documents",
+  component: DocumentsPage,
+});
+
+const addDocumentRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/documents/add-document",
+  component: AddDocument,
+  validateSearch: z.object({
+    classificationId: z.coerce.number().optional(),
+  }),
+});
+
 // 5. Route login & not found
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -104,6 +121,8 @@ const routeTree = rootRoute.addChildren([
       groupsRoute,
       usersRoute,
       structureRoute,
+      documentRoute,
+      addDocumentRoute,
     ]),
   ]),
   loginRoute,

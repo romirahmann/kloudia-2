@@ -11,9 +11,14 @@ export function TableGroup({ onAction, data }) {
     {
       header: "Created At",
       key: "createdAt",
-      render: (value) => moment(value).format("DD-MM-YYYY"),
+      render: (value) => moment(value).format("DD-MM-YYYY HH:mm:ss"),
     },
-    { header: "Updated At", key: "updateAt" },
+    {
+      header: "Update At",
+      key: "updateAt",
+      render: (value) =>
+        value !== null ? moment(value).format("DD-MM-YYYY HH:mm:ss") : "",
+    },
   ];
 
   const renderActions = (row, index) => {

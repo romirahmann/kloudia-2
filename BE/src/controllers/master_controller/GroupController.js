@@ -18,7 +18,7 @@ const getGroupById = api.catchAsync(async (req, res) => {
 
 const createGroup = api.catchAsync(async (req, res) => {
   const data = req.body;
-  if (data) return api.error(res, "Data not found", 401);
+  if (!data) return api.error(res, "Data not found", 401);
   let result = await modelGroup.create(data);
   emit("Add_Group", 200);
   return api.success(res, result);
