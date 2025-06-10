@@ -10,7 +10,7 @@ import { Button } from "../../shared/Button";
 import moment from "moment";
 
 export function AddDocument() {
-  const { classificationId } = useSearch({});
+  const { classificationId, cabinetId } = useSearch({});
   const [structures, setStructures] = useState([]);
   const [formData, setFormData] = useState({});
 
@@ -60,10 +60,11 @@ export function AddDocument() {
     });
 
     data.append("classificationId", classificationId);
+    data.append("cabinetId", cabinetId);
 
-    for (let pair of data.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // for (let pair of data.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
 
     try {
       const res = await api.post("/master/upload-document", data);

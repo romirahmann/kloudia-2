@@ -75,6 +75,14 @@ router.delete("/structure/:structureId", StructureController.deleteStructure);
 
 // DETAIL
 router.get("/details/:classificationId", StructureController.getAllDetail);
+router.get(
+  "/details/:detailId/classification/:classificationId",
+  StructureController.getAllDetailById
+);
+router.delete(
+  "/detail/:detailId/classification/:classificationId",
+  StructureController.deletedDetail
+);
 
 // DOCUMETNS
 router.post(
@@ -82,6 +90,5 @@ router.post(
   upload.single("file"),
   DocumentController.uploadDocument
 );
-router.get("/get-file", DocumentController.getFile);
 
 module.exports = router;

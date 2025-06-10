@@ -10,6 +10,6 @@ const fileRoutes = require("../routes/utility_routes/file.routes");
 
 router.use("/auth/", authRoutes);
 router.use("/master/", accessControl, verifyToken, masterRoutes);
-// router.use("/file", fileRoutes);
+router.use("/file/", fileRoutes);
 
 module.exports = router;

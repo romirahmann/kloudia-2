@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { AiOutlineFileAdd } from "react-icons/ai";
-import { FaFolder } from "react-icons/fa";
+import { FaEye, FaFolder } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdOutlineDeleteForever } from "react-icons/md";
@@ -17,12 +17,8 @@ export function DocumentsPage() {
   const [classifications, setClassification] = useState([]);
   const [selectedClassification, setSelectedClassification] = useState("");
   const [dataDetail, setDataDetail] = useState([]);
+  const [selectedDetail, setSelectedDetail] = useState("");
   const navigate = useNavigate();
-  const [modal, setModal] = useState({
-    open: false,
-    type: null,
-    data: null,
-  });
 
   const [showAlert, setShowAlert] = useState({
     show: false,
@@ -74,17 +70,72 @@ export function DocumentsPage() {
     }
 
     switch (type) {
+      case "VIEW":
+        navigate({
+          to: "view-document",
+          search: {
+            classificationId: selectedClassification.classificationId,
+            detailId: selectedDetail.detailId,
+          },
+        });
+        break;
       case "ADD":
         navigate({
           to: "add-document",
-          search: { classificationId: selectedClassification.classificationId },
+          search: {
+            classificationId: selectedClassification.classificationId,
+            cabinetId: selectedClassification.cabinetId,
+          },
         });
         break;
       case "UPDATE":
         navigate({ to: "edit-document" });
         break;
+      case "DELETE":
+        if (!selectedDetail) {
+          setShowAlert({
+            show: true,
+            message: "Choose your document first",
+            type: "warning",
+          });
+          return;
+        }
+        handleDeleted();
+        break;
+      case "SHARE":
+        navigate({
+          to: "/share-document",
+          search: {
+            originalName: selectedDetail.fileName,
+            filename: selectedDetail.encryption_title,
+            key: selectedDetail.key,
+            iv: selectedDetail.iv,
+          },
+        });
+        break;
+
       default:
         break;
+    }
+  };
+
+  const handleDeleted = async () => {
+    try {
+      await api.delete(
+        `/master/detail/${selectedDetail.detailId}/classification/${selectedClassification.classificationId}`
+      );
+      setShowAlert({
+        show: true,
+        message: "Document deleted successfully",
+        type: "success",
+      });
+    } catch (error) {
+      console.log(error.response);
+      setShowAlert({
+        show: true,
+        message: "Error deleting document",
+        type: "error",
+      });
     }
   };
 
@@ -114,6 +165,11 @@ export function DocumentsPage() {
 
                 {/* Icon Action */}
                 <div className="iconAction flex gap-5 md:gap-2 text-md text-xl justify-center items-center order-3 md:order-1 mt-2 md:my-0 text-primary dark:text-white">
+                  <Button onClick={() => handleAction("VIEW")}>
+                    <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
+                      <FaEye />
+                    </div>
+                  </Button>
                   <Button onClick={() => handleAction("ADD")}>
                     <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
                       <AiOutlineFileAdd />
@@ -122,12 +178,16 @@ export function DocumentsPage() {
                   <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
                     <FiEdit />
                   </div>
-                  <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
-                    <MdOutlineDeleteForever />
-                  </div>
-                  <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
-                    <IoShareSocialOutline />
-                  </div>
+                  <Button onClick={() => handleAction("DELETE")}>
+                    <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
+                      <MdOutlineDeleteForever />
+                    </div>
+                  </Button>
+                  <Button onClick={() => handleAction("SHARE")}>
+                    <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
+                      <IoShareSocialOutline />
+                    </div>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -155,6 +215,7 @@ export function DocumentsPage() {
             <TableDocument
               classificationId={selectedClassification.classificationId}
               data={dataDetail}
+              selectedDetail={(val) => setSelectedDetail(val)}
             />
           </div>
         </div>

@@ -76,6 +76,22 @@ const getAllDetail = api.catchAsync(async (req, res) => {
   let data = await modelStructure.getAllDetail(tableName);
   return api.success(res, data);
 });
+const getAllDetailById = api.catchAsync(async (req, res) => {
+  const { classificationId, detailId } = req.params;
+  if (!classificationId) return api.error(res, "Invalid Classification", 401);
+  const tableName = `tbl_detail${classificationId}`;
+
+  let data = await modelStructure.getDetailById(tableName, detailId);
+  return api.success(res, data);
+});
+
+const deletedDetail = api.catchAsync(async (req, res) => {
+  const { detailId, classificationId } = req.params;
+  // console.log({ detailId, classificationId });
+  const tableName = `tbl_detail${classificationId}`;
+  let result = await modelStructure.deletedRowDetail(tableName, detailId);
+  return api.success(res, result);
+});
 
 // TYPE DATA
 const getAllTypeData = api.catchAsync(async (req, res) => {
@@ -91,4 +107,6 @@ module.exports = {
   getAllTypeData,
   deleteStructure,
   getAllDetail,
+  deletedDetail,
+  getAllDetailById,
 };

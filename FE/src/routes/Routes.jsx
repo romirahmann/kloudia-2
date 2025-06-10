@@ -18,6 +18,8 @@ import { z } from "zod";
 import { StructurePage } from "../pages/StructurePage";
 import { DocumentsPage } from "../pages/DocumentsPage";
 import { AddDocument } from "../components/documents/AddDocument";
+import { ViewDocumentPage } from "../pages/ViewDocumentPage";
+import { SharedDocument } from "../pages/SharedDocument";
 
 // 1. Buat root route
 const rootRoute = createRootRoute();
@@ -96,6 +98,23 @@ const addDocumentRoute = createRoute({
     classificationId: z.coerce.number().optional(),
   }),
 });
+const viewDocumentRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/documents/view-document",
+  component: ViewDocumentPage,
+  validateSearch: z.object({
+    detailId: z.coerce.number().optional(),
+  }),
+});
+
+const sharedDocumentRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/share-document",
+  component: SharedDocument,
+  validateSearch: z.object({
+    query: z.coerce.number().optional(),
+  }),
+});
 
 // 5. Route login & not found
 const loginRoute = createRoute({
@@ -123,8 +142,10 @@ const routeTree = rootRoute.addChildren([
       structureRoute,
       documentRoute,
       addDocumentRoute,
+      viewDocumentRoute,
     ]),
   ]),
+  sharedDocumentRoute,
   loginRoute,
   notFoundRoute,
 ]);

@@ -61,7 +61,22 @@ const remove = async (structureId) =>
   db("tbl_structure").del().where({ structureId });
 
 // DETAIL
-const getAllDetail = async (tableName) => db.select("*").from(tableName);
+const getAllDetail = async (tableName) =>
+  db
+    .select(`dt.*`, `dk.*`, `v.*`)
+    .from(`${tableName} as dt`)
+    .leftJoin("tbl_documents as dk", `dt.documentId`, "dk.documentId")
+    .leftJoin("tbl_versions as v", "dk.documentId", "v.documentId");
+
+const getDetailById = async (tableName, detailId) =>
+  db
+    .select(`dt.*`, `dk.*`, `v.*`)
+    .from(`${tableName} as dt`)
+    .leftJoin("tbl_documents as dk", `dt.documentId`, "dk.documentId")
+    .leftJoin("tbl_versions as v", "dk.documentId", "v.documentId")
+    .where("dt.detailId", detailId)
+    .first();
+
 const detailIsExist = async (tableName) => db.schema.hasTable(tableName);
 
 const createDetail = async (tableName, data) =>
@@ -164,6 +179,9 @@ const insertDetail = async (tableName, data) => {
   return db(tableName).insert(filteredData);
 };
 
+const deletedRowDetail = async (tableName, detailId) =>
+  db(tableName).where({ detailId }).del();
+
 // type data
 const getAllType = async () => db.select("*").from("tbl_typedata");
 
@@ -182,4 +200,6 @@ module.exports = {
   updateColumn,
   insertDetail,
   getAllDetail,
+  deletedRowDetail,
+  getDetailById,
 };
