@@ -101,7 +101,7 @@ export function StructurePage() {
           </div>
         </div>
       </div>
-      <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md p-9">
+      <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md px-9 py-2">
         <div className="filter flex items-center mt-10 gap-2">
           <Search
             onChange={(e) => handleOnChangeFilter(e)}

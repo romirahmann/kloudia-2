@@ -20,7 +20,7 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
       const isSubmenuOpen = openSubmenuId === item.id;
 
       return (
-        <div className="w-full">
+        <div className="w-full" key={item.id}>
           <button
             onClick={() => {
               if (hasChildren) {

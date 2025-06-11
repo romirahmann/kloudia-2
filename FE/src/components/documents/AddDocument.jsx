@@ -7,7 +7,6 @@ import api from "../../services/axios.service";
 import { Form } from "../../shared/Form";
 import { Input } from "../../shared/Input";
 import { Button } from "../../shared/Button";
-import moment from "moment";
 
 export function AddDocument() {
   const { classificationId, cabinetId } = useSearch({});
@@ -24,7 +23,7 @@ export function AddDocument() {
     try {
       const res = await api.get(`/master/structures/${classificationId}`);
       setStructures(res.data.data);
-      // console.log(res.data.data);
+
       const initialData = {};
       res.data.data.forEach((item) => {
         initialData[item.structureDescription] = "";
@@ -61,10 +60,6 @@ export function AddDocument() {
 
     data.append("classificationId", classificationId);
     data.append("cabinetId", cabinetId);
-
-    // for (let pair of data.entries()) {
-    //   console.log(pair[0], pair[1]);
-    // }
 
     try {
       const res = await api.post("/master/upload-document", data);

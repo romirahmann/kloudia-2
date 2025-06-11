@@ -63,17 +63,53 @@ const remove = async (structureId) =>
 // DETAIL
 const getAllDetail = async (tableName) =>
   db
-    .select(`dt.*`, `dk.*`, `v.*`)
+    .select(
+      `dt.*`,
+      `dk.classificationId`,
+      `dk.key`,
+      `dk.iv`,
+      `dk.authTag`,
+      `dk.cabinetId`,
+      `dk.encryption_title`,
+      `v.versionId`,
+      `v.versionNumber`,
+      `v.versionPath`,
+      `v.versionSize`,
+      `v.pageCount`,
+      `v.isLatest`
+    )
     .from(`${tableName} as dt`)
     .leftJoin("tbl_documents as dk", `dt.documentId`, "dk.documentId")
     .leftJoin("tbl_versions as v", "dk.documentId", "v.documentId");
 
 const getDetailById = async (tableName, detailId) =>
   db
-    .select(`dt.*`, `dk.*`, `v.*`)
+    .select(
+      `dt.*`,
+      `dk.classificationId`,
+      `dk.key`,
+      `dk.iv`,
+      `dk.authTag`,
+      `dk.cabinetId`,
+      `dk.encryption_title`,
+      `v.versionId`,
+      `v.versionNumber`,
+      `v.versionPath`,
+      `v.versionSize`,
+      `v.pageCount`,
+      `v.isLatest`,
+      `ct.cabinetName`,
+      `cl.classificationName`
+    )
     .from(`${tableName} as dt`)
     .leftJoin("tbl_documents as dk", `dt.documentId`, "dk.documentId")
     .leftJoin("tbl_versions as v", "dk.documentId", "v.documentId")
+    .leftJoin("tbl_cabinets as ct", "dk.cabinetId", "ct.cabinetId")
+    .leftJoin(
+      "tbl_classification as cl",
+      "dk.classificationId",
+      "cl.classificationId"
+    )
     .where("dt.detailId", detailId)
     .first();
 

@@ -24,18 +24,18 @@ export function NonactiveComponent({ onNonaktif, onClose }) {
           </motion.div>
         </AnimatePresence>
         <h1 className="text-center text-gray-800 dark:text-gray-200 my-10">
-          Are you sure for nonaktif this data ?{" "}
+          Are you sure for nonaktif this data ?
         </h1>
         <div className="btn flex justify-end gap-2">
           <Button
             onClick={onClose}
-            className="bg-transparent border border-gray-700 rounded-md text-gray-900"
+            className="bg-transparent border border-gray-500 rounded-md text-gray-900 px-4 py-1"
           >
             Cancel
           </Button>
           <Button
             onClick={handleNonaktif}
-            className="bg-yellow-700 hover:bg-red-600 rounded-md text-white"
+            className="bg-yellow-700 px-4 py-1 hover:bg-red-600 rounded-md text-white"
           >
             Nonaktif
           </Button>

@@ -17,7 +17,7 @@ const uploadDocument = api.catchAsync(async (req, res) => {
   const encryptedPath = file.path + ".enc";
 
   // Enkripsi file
-  const { key, iv } = await encryptFile(inputPath, encryptedPath);
+  const { key, iv, authTag } = await encryptFile(inputPath, encryptedPath);
 
   // Hapus file asli
   fs.unlinkSync(inputPath);
@@ -34,47 +34,49 @@ const uploadDocument = api.catchAsync(async (req, res) => {
     cabinetId: data.cabinetId,
     key: key,
     iv: iv,
+    authTag: authTag,
     encryption_title: path.basename(encryptedPath),
   };
 
   let insertDocument = await modelDocument.insertDocument(dataDocument);
 
-  // // insert row version
+  if (!insertDocument)
+    return api.error(res, "Failed To Upload Data Document", 401);
+
+  // insert row version
   let versionDocument = {
     documentId: insertDocument[0],
     versionNumber: 1,
     versionPath: file.path,
     versionSize: file.size,
   };
-  await modelDocument.insertVersion(versionDocument);
+  let insertVersion = await modelDocument.insertVersion(versionDocument);
+  if (!insertVersion) return api.error(res, "Failed To Upload Version", 401);
+
   // insert row detail
   data.documentId = insertDocument[0];
+
   await modelStructure.insertDetail(tableName, data);
-  // console.log("file: ", file);
-  // console.log("data: ", data);
-  // console.log("tableName: ", tableName);
-  // console.log({
-  //   originalName: file.originalname,
-  //   encryptedFile: path.basename(encryptedPath),
-  //   key,
-  //   iv,
-  // });
+
   return api.success(res, {
     message: "Upload & encryption success",
     originalName: file.originalname,
     encryptedFile: path.basename(encryptedPath),
     key,
     iv,
+    authTag,
   });
 });
 
 const getFile = api.catchAsync(async (req, res) => {
-  const { fileName, key, iv } = req.query;
+  const { fileName, key, iv, authTag } = req.query;
 
-  console.log(fileName, key, iv);
-
-  if (!fileName || !key || !iv) {
-    return api.error(res, "Missing fileName, key, or iv in query params", 400);
+  if (!fileName || !key || !iv || !authTag) {
+    return api.error(
+      res,
+      "Missing fileName, key, iv, or authTag in query params",
+      400
+    );
   }
 
   const encryptedPath = path.join("src", "documents", fileName);
@@ -83,15 +85,12 @@ const getFile = api.catchAsync(async (req, res) => {
     `decrypted-${Date.now()}-${fileName.replace(".enc", "")}`
   );
 
-  // Cek apakah file ada
   if (!fs.existsSync(encryptedPath)) {
     return api.error(res, "File not found", 404);
   }
 
-  // Dekripsi
-  await decryptFile(encryptedPath, decryptedPath, key, iv);
+  await decryptFile(encryptedPath, decryptedPath, key, iv, authTag);
 
-  // Kirim file hasil dekripsi
   res.download(decryptedPath, (err) => {
     fs.unlinkSync(decryptedPath);
     if (err) {

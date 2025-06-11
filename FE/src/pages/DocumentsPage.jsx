@@ -60,26 +60,34 @@ export function DocumentsPage() {
   };
 
   const handleAction = (type) => {
-    if (!selectedClassification) {
-      setShowAlert({
-        show: true,
-        message: "Choose your document first",
-        type: "warning",
-      });
-      return;
-    }
-
     switch (type) {
       case "VIEW":
+        if (!selectedClassification || !selectedDetail) {
+          setShowAlert({
+            show: true,
+            message: "Choose document first!",
+            type: "warning",
+          });
+          return;
+        }
         navigate({
           to: "view-document",
           search: {
             classificationId: selectedClassification.classificationId,
             detailId: selectedDetail.detailId,
+            authTag: selectedDetail.authTag,
           },
         });
         break;
       case "ADD":
+        if (!selectedClassification) {
+          setShowAlert({
+            show: true,
+            message: "Choose document first!",
+            type: "warning",
+          });
+          return;
+        }
         navigate({
           to: "add-document",
           search: {
@@ -89,13 +97,21 @@ export function DocumentsPage() {
         });
         break;
       case "UPDATE":
+        if (!selectedDetail) {
+          setShowAlert({
+            show: true,
+            message: "Choose document first!",
+            type: "warning",
+          });
+          return;
+        }
         navigate({ to: "edit-document" });
         break;
       case "DELETE":
         if (!selectedDetail) {
           setShowAlert({
             show: true,
-            message: "Choose your document first",
+            message: "Choose document first!",
             type: "warning",
           });
           return;
@@ -103,6 +119,14 @@ export function DocumentsPage() {
         handleDeleted();
         break;
       case "SHARE":
+        if (!selectedDetail) {
+          setShowAlert({
+            show: true,
+            message: "Choose document first!",
+            type: "warning",
+          });
+          return;
+        }
         navigate({
           to: "/share-document",
           search: {
@@ -113,7 +137,6 @@ export function DocumentsPage() {
           },
         });
         break;
-
       default:
         break;
     }
@@ -142,81 +165,85 @@ export function DocumentsPage() {
   return (
     <>
       <div className="max-w-full rounded-md ">
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-1 md:gap-3 ">
-          {/* HEADER NAVIGASI */}
-          <div className="grid1 w-full col-span-1 ">
-            <div className="text-2xl text-center font-bold border border-gray-600/30 py-5 px-5 dark:text-gray-200 dark:bg-gray-950 bg-white rounded-lg">
-              <h1>DOCUMENTS</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-6 lg:gap-3">
+          {/* SIDE NAVBAR */}
+          <div className="sideNav w-full">
+            <div className="">
+              <div className="text-sm lg:text-2xl text-center font-bold border border-gray-600/30 py-5 px-5 dark:text-gray-200 dark:bg-gray-950 bg-white rounded-lg">
+                <h1>DOCUMENTS</h1>
+              </div>
+            </div>
+
+            <div className="mt-2 border md:p-4 border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm flex flex-col justify-center ">
+              {classifications &&
+                classifications.map((classification) => {
+                  return (
+                    <button
+                      onClick={() => setSelectedClassification(classification)}
+                    >
+                      <div className="flex items-center gap-1 md:gap-2 ps-4 py-2 md:ps-5 text-sm lg:text-md hover:text-primary">
+                        <FaFolder />
+                        <h1> {classification?.classificationName} </h1>
+                      </div>
+                    </button>
+                  );
+                })}
             </div>
           </div>
-          {/* HEADER CONTENT */}
-          <div className="grid2 col-span-5 content-center">
-            <div className="grid2 col-span-3 content-center">
-              <div className="header-content font-bold border border-gray-600/30 px-2 py-5 md:py-3 md:px-5 rounded-lg bg-white dark:bg-gray-950 dark:text-gray-200 flex flex-col md:flex-row justify-between gap-3 md:gap-2">
-                <div className="title flex items-center order-1  md:order-2">
-                  <h1 className="text-sm text-center md:text-2xl font-bold">
-                    {selectedClassification.classificationName}
-                  </h1>
-                </div>
 
-                <div className="searchComponent order-2 md:order-3">
-                  <Search />
-                </div>
-
-                {/* Icon Action */}
-                <div className="iconAction flex gap-5 md:gap-2 text-md text-xl justify-center items-center order-3 md:order-1 mt-2 md:my-0 text-primary dark:text-white">
-                  <Button onClick={() => handleAction("VIEW")}>
-                    <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
-                      <FaEye />
-                    </div>
-                  </Button>
-                  <Button onClick={() => handleAction("ADD")}>
-                    <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
-                      <AiOutlineFileAdd />
-                    </div>
-                  </Button>
-                  <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
-                    <FiEdit />
+          {/* MAIN CONTENT */}
+          <div className="mainContent col-span-5 mt-2 md:mt-0 content-center">
+            {/* HEADER CONTENT */}
+            <div>
+              <div className="grid2 content-center">
+                <div className="header-content font-bold border border-gray-600/30 px-5 py-5 md:py-3 md:px-5 rounded-lg bg-white dark:bg-gray-950 dark:text-gray-200 flex flex-col md:flex-row justify-between gap-3 md:gap-2">
+                  <div className="title flex items-center order-1  md:order-2">
+                    <h1 className="text-sm text-center md:text-2xl font-bold">
+                      {selectedClassification.classificationName}
+                    </h1>
                   </div>
-                  <Button onClick={() => handleAction("DELETE")}>
+
+                  <div className="searchComponent order-2 md:order-3">
+                    <Search />
+                  </div>
+
+                  {/* Icon Action */}
+                  <div className="iconAction flex gap-5 md:gap-2 text-md text-xl justify-center items-center order-3 md:order-1 mt-2 md:my-0 text-primary dark:text-white">
+                    <Button onClick={() => handleAction("VIEW")}>
+                      <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
+                        <FaEye />
+                      </div>
+                    </Button>
+                    <Button onClick={() => handleAction("ADD")}>
+                      <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
+                        <AiOutlineFileAdd />
+                      </div>
+                    </Button>
                     <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
-                      <MdOutlineDeleteForever />
+                      <FiEdit />
                     </div>
-                  </Button>
-                  <Button onClick={() => handleAction("SHARE")}>
-                    <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
-                      <IoShareSocialOutline />
-                    </div>
-                  </Button>
+                    <Button onClick={() => handleAction("DELETE")}>
+                      <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
+                        <MdOutlineDeleteForever />
+                      </div>
+                    </Button>
+                    <Button onClick={() => handleAction("SHARE")}>
+                      <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
+                        <IoShareSocialOutline />
+                      </div>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-6 md:gap-3 mt-2 ">
-          {/* BODY NAVIGASI */}
-          <div className="grid1 col-span-1 border border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm flex flex-col justify-center gap-2 px-8">
-            {classifications &&
-              classifications.map((classification) => {
-                return (
-                  <button
-                    onClick={() => setSelectedClassification(classification)}
-                  >
-                    <div className="flex items-center gap-2 text-md hover:text-primary">
-                      <FaFolder />
-                      <h1> {classification?.classificationName} </h1>
-                    </div>
-                  </button>
-                );
-              })}
-          </div>
-          {/* BODY CONTENT */}
-          <div className="grid2 col-span-5 border border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm p-3">
-            <TableDocument
-              classificationId={selectedClassification.classificationId}
-              data={dataDetail}
-              selectedDetail={(val) => setSelectedDetail(val)}
-            />
+            {/* BODY CONTENT */}
+            <div className="grid2 mt-2 col-span-5 border border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm p-3">
+              <TableDocument
+                classificationId={selectedClassification.classificationId}
+                data={dataDetail}
+                selectedDetail={(val) => setSelectedDetail(val)}
+              />
+            </div>
           </div>
         </div>
 
