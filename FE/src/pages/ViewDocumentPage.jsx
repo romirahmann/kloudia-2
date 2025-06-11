@@ -50,11 +50,10 @@ export function ViewDocumentPage() {
               Detail Document
             </h2>
             <div className="space-y-2 text-sm text-gray-700">
-              <p>
-                <span className="font-medium">
-                  File Name: {detailDocument.fileName}
-                </span>
-              </p>
+              <div>
+                <p className="font-bold">File Name:</p>
+                <p>{detailDocument.fileName}</p>
+              </div>
             </div>
           </div>
 
