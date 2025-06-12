@@ -64,7 +64,18 @@ export function StructurePage() {
     }
   };
 
-  const handleOnChangeFilter = (e) => {};
+  const handleOnChangeFilter = async (e) => {
+    const { name, value } = e.target;
+
+    try {
+      let res = await api.get(
+        `/master/filter/structure/${classificationId}?search=${value}`
+      );
+      setStructure(res.data.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
   const handleOpenModal = (type, data) => {
     setModal({ open: true, type, data });

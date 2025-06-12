@@ -54,6 +54,37 @@ const getByClassificationId = async (classificationId) =>
     .join("tbl_typedata as t", "t.typeId", "s.typeId")
     .where("s.classificationId", classificationId);
 
+const getStructureByFilter = async (classificationId, search) => {
+  const query = db
+    .select(
+      "s.structureId",
+      "s.classificationId",
+      "s.structureName",
+      "s.structureDescription",
+      "s.fieldSize",
+      "s.typeId",
+      "c.classificationName",
+      "t.typeName",
+      "t.length"
+    )
+    .from("tbl_structure as s")
+    .join("tbl_classification as c", "s.classificationId", "c.classificationId")
+    .join("tbl_typedata as t", "t.typeId", "s.typeId")
+    .where("s.classificationId", classificationId);
+
+  if (search) {
+    query.where(function () {
+      this.where("s.structureName", "like", `${search}%`).orWhere(
+        "s.structureDescription",
+        "like",
+        `${search}%`
+      );
+    });
+  }
+
+  return query;
+};
+
 const insert = async (data) => db("tbl_structure").insert(data);
 const update = async (structureId, data) =>
   db("tbl_structure").update(data).where({ structureId });
@@ -241,4 +272,5 @@ module.exports = {
   getAllDetail,
   deletedRowDetail,
   getDetailById,
+  getStructureByFilter,
 };

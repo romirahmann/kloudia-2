@@ -15,6 +15,17 @@ const getAllStructureByClassification = api.catchAsync(async (req, res) => {
   return api.success(res, result);
 });
 
+const getAllBySearch = api.catchAsync(async (req, res) => {
+  const { search } = req.query;
+  const { classificationId } = req.params;
+
+  const result = await modelStructure.getStructureByFilter(
+    classificationId,
+    search
+  );
+  return api.success(res, result);
+});
+
 const insertStructure = api.catchAsync(async (req, res) => {
   const data = req.body;
 
@@ -40,12 +51,15 @@ const insertStructure = api.catchAsync(async (req, res) => {
 const updateStructure = api.catchAsync(async (req, res) => {
   const { structureId } = req.params;
   const data = req.body;
-
+  data.structureDescription = camelcase(data.structureName);
   const structure = await modelStructure.getById(structureId);
   if (!structure) return api.error(res, "Structure Not Found!", 404);
   let tableName = `tbl_detail${structure.classificationId}`;
 
-  await modelStructure.update(structureId, data);
+  let editStructure = await modelStructure.update(structureId, data);
+  if (!editStructure) {
+    return api.error(res, "Failed Update Structure!", 401);
+  }
   await modelStructure.updateColumn(tableName, structure, data);
 
   emit("Update_Structure", 200);
@@ -109,4 +123,5 @@ module.exports = {
   getAllDetail,
   deletedDetail,
   getAllDetailById,
+  getAllBySearch,
 };

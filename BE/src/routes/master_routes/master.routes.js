@@ -70,6 +70,10 @@ router.get(
   "/structures/:classificationId",
   StructureController.getAllStructureByClassification
 );
+router.get(
+  "/filter/structure/:classificationId",
+  StructureController.getAllBySearch
+);
 router.post("/structure", StructureController.insertStructure);
 router.put("/structure/:structureId", StructureController.updateStructure);
 router.get("/typedata", StructureController.getAllTypeData);
