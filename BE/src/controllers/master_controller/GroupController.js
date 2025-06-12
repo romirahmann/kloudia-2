@@ -4,7 +4,6 @@ const api = require("../../tools/common");
 
 const getAllGroup = api.catchAsync(async (req, res) => {
   let result = await modelGroup.getAll();
-
   return api.success(res, result);
 });
 
@@ -43,10 +42,17 @@ const deleteGroup = api.catchAsync(async (req, res) => {
   return api.success(res, result);
 });
 
+const filterGroup = api.catchAsync(async (req, res) => {
+  const { search } = req.query;
+  let result = await modelGroup.getByFitler(search);
+  return api.success(res, result);
+});
+
 module.exports = {
   getAllGroup,
   getGroupById,
   createGroup,
   updateGroup,
   deleteGroup,
+  filterGroup,
 };

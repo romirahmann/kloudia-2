@@ -26,7 +26,7 @@ export default function SelectInput({
           id={id}
           value={value}
           onChange={onChange}
-          className={`appearance-none md:text-sm text-xs w-full bg-white dark:bg-transparent dark:text-gray-50 border border-gray-300 py-3 px-3 rounded-xl  focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out 
+          className={`appearance-none md:text-sm text-xs w-full bg-white dark:bg-transparent dark:text-gray-50 border border-gray-300 py-4 px-4 rounded-xl  focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out 
             ${
               isPlaceholder
                 ? "text-gray-600  dark:text-gray-500"

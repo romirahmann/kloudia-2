@@ -26,13 +26,13 @@ export function ActivatedComponent({ onActive, onClose }) {
         <div className="btn flex justify-end gap-2">
           <Button
             onClick={onClose}
-            className="bg-transparent border border-gray-700 rounded-md text-gray-900"
+            className="px-3 py-2 bg-transparent border border-gray-700 rounded-md text-gray-900"
           >
             Cancel
           </Button>
           <Button
             onClick={() => onActive()}
-            className="bg-yellow-700 hover:bg-red-600 rounded-md text-white"
+            className="px-3 py-2 bg-yellow-700 hover:bg-red-600 rounded-md text-white"
           >
             Aktifkan
           </Button>

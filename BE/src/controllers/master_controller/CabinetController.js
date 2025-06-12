@@ -6,6 +6,11 @@ const getAllCabinets = api.catchAsync(async (req, res) => {
   let result = await modelCabinet.getAll();
   return api.success(res, result);
 });
+const filterSearch = api.catchAsync(async (req, res) => {
+  const { search } = req.query;
+  let result = await modelCabinet.getByFitler(search);
+  return api.success(res, result);
+});
 const createCabinet = api.catchAsync(async (req, res) => {
   let data = req.body;
   if (!data.tenantId || !data.grupId || !data.cabinetName)
@@ -36,4 +41,5 @@ module.exports = {
   createCabinet,
   updateCabinet,
   deleteCabinet,
+  filterSearch,
 };

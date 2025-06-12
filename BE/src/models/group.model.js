@@ -8,17 +8,19 @@ const update = async (grupId, data) =>
   await db("tbl_grup_user").where({ grupId }).update(data);
 const remove = async (grupId) =>
   await db("tbl_grup_user").where({ grupId }).del();
-const getByFitler = async (data = {}) => {
+const getByFitler = async (search = "") => {
   const query = db("tbl_grup_user").select("*");
-  if (data.search) {
+  if (search) {
     query.where(function () {
-      this.where("u.username", "like", `%${data.search}%`)
-        .orWhere("u.email", "like", `%${data.search}%`)
-        .orWhere("u.fullname", "like", `%${data.search}%`);
+      this.where("grupName", "like", `${search}%`).orWhere(
+        "grupDescription",
+        "like",
+        `${search}%`
+      );
     });
   }
 
   return await query;
 };
 
-module.exports = { getAll, getBygrupId, create, update, remove };
+module.exports = { getAll, getBygrupId, create, update, remove, getByFitler };

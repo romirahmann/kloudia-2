@@ -21,12 +21,32 @@ const update = async (cabinetId, data) =>
 const remove = async (cabinetId) =>
   db("tbl_cabinets").where({ cabinetId }).del();
 
-const getByFilter = async (filter) => {};
+const getByFitler = async (search = "") => {
+  const query = db("tbl_cabinets as c")
+    .select(
+      "c.cabinetId",
+      "c.cabinetName",
+      "c.grupId",
+      "c.tenantId",
+      "c.isActive",
+      "t.tenantName",
+      "g.grupName"
+    )
+    .join("tbl_tenants as t", "c.tenantId", "t.tenantId")
+    .innerJoin("tbl_grup_user as g", "c.grupId", "g.grupId");
+  if (search) {
+    query.where(function () {
+      this.where("cabinetName", "like", `${search}%`);
+    });
+  }
+
+  return await query;
+};
 
 module.exports = {
   getAll,
-  getByFilter,
   insert,
   update,
   remove,
+  getByFitler,
 };

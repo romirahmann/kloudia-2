@@ -119,40 +119,43 @@ const createDetail = async (tableName, data) =>
   db.schema.createTable(tableName, (table) => {
     table.increments("detailId").primary();
     table.integer("documentId");
-    switch (parseInt(data.typeId)) {
-      case 1: // Integer
-        table.integer(data.structureDescription);
-        break;
-      case 2: // String
-        table.string(data.structureDescription, 255);
-        break;
-      case 3: // Boolean
-        table.boolean(data.structureDescription);
-        break;
-      case 4: // DateTime
-        table.dateTime(data.structureDescription);
-        break;
-      default:
-        throw new Error(`Tipe data tidak dikenali: ${typeId}`);
+    if (data) {
+      switch (parseInt(data.typeId)) {
+        case 1: // Integer
+          table.integer(data.structureDescription);
+          break;
+        case 2: // String
+          table.string(data.structureDescription, 255);
+          break;
+        case 3: // Boolean
+          table.boolean(data.structureDescription);
+          break;
+        case 4: // DateTime
+          table.dateTime(data.structureDescription);
+          break;
+        default:
+          break;
+      }
     }
 
     table.timestamps(true, true);
   });
 
-const createColoumn = async (tableName, data) =>
+const createColoumn = async (tableName, data = {}) =>
   await db.schema.alterTable(tableName, (table) => {
     switch (parseInt(data.typeId)) {
-      case 1: // Integer
+      case 1:
         table.integer(data.structureDescription);
         break;
-      case 2: // String
+      case 2:
         table.string(data.structureDescription, 255);
         break;
-      case 3: // Boolean
-        table.boolean(data.structureDescription);
-        break;
-      case 4: // DateTime
+      case 3:
         table.dateTime(data.structureDescription);
+
+        break;
+      case 4:
+        table.boolean(data.structureDescription);
         break;
       default:
         throw new Error(`Tipe data tidak dikenali: ${typeId}`);

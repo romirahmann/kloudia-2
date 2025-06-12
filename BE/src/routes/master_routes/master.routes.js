@@ -25,6 +25,7 @@ router.post("/validate-otp", UserController.validateOtp);
 // GROUP
 router.get("/groups", GroupController.getAllGroup);
 router.get("/group/:grupId", GroupController.getGroupById);
+router.get("/filter-group", GroupController.filterGroup);
 router.post("/group", GroupController.createGroup);
 router.put("/group/:grupId", GroupController.updateGroup);
 router.delete("/group/:grupId", GroupController.deleteGroup);
@@ -39,6 +40,7 @@ router.delete("/tenant/:tenantId", TenantController.deleteTenant);
 
 // CABINETS
 router.get("/cabinets", CabinetController.getAllCabinets);
+router.get("/filter-cabinet", CabinetController.filterSearch);
 router.post("/cabinet", CabinetController.createCabinet);
 router.put("/cabinet/:cabinetId", CabinetController.updateCabinet);
 router.delete("/cabinet/:cabinetId", CabinetController.deleteCabinet);

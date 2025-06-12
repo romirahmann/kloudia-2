@@ -24,14 +24,15 @@ export function GroupPage() {
     type: "",
   });
 
-  const [filter, setFilter] = useState({
-    search: "",
-    status: "",
-  });
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     fetchGroups();
   }, []);
+
+  useEffect(() => {
+    fetchGroupByFilter();
+  }, [filter]);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -52,13 +53,18 @@ export function GroupPage() {
     }
   };
 
+  const fetchGroupByFilter = async () => {
+    try {
+      let res = await api.get(`/master/filter-group?search=${filter}`);
+      setGroups(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleOnChangeSearh = async (e) => {
     const { name, value } = e.target;
-
-    setFilter((prevFilter) => ({
-      ...prevFilter,
-      [name]: value,
-    }));
+    setFilter(value);
   };
   const handleOpenModal = (type, data) => {
     setModal({ open: true, type, data });
@@ -78,7 +84,7 @@ export function GroupPage() {
           <div className="addTenant">
             <Button
               onClick={() => handleOpenModal("ADD", null)}
-              className="btn-open-filter flex justify-center items-center gap-1 border rounded-md p-2 border-primary  text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
+              className="btn-open-filter flex justify-center items-center gap-1 border rounded-md px-2 py-3 border-primary  text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
             >
               <FaPlus />
               <span>Add</span>

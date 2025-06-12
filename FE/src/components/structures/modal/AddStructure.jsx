@@ -24,6 +24,7 @@ export function AddStructure({ typeData, onAdd, classificationId }) {
     if (parseInt(formData.typeId) === 2) {
       formData.fieldSize = 255;
     }
+    console.log(formData);
     onAdd(formData);
   };
 

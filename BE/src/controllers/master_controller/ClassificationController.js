@@ -1,4 +1,5 @@
 const modelClassification = require("../../models/classification.model");
+const modelStructure = require("../../models/structure.model");
 const { emit } = require("../../services/socket.service");
 const api = require("../../tools/common");
 
@@ -6,6 +7,7 @@ const getAllClassification = api.catchAsync(async (req, res) => {
   let result = await modelClassification.getAll();
   return api.success(res, result);
 });
+
 const getClassificationId = api.catchAsync(async (req, res) => {
   const { classificationId } = req.params;
   let result = await modelClassification.byID(classificationId);
@@ -16,6 +18,15 @@ const createClassification = api.catchAsync(async (req, res) => {
   let data = req.body;
 
   let result = await modelClassification.insert(data);
+
+  const tableName = `tbl_detail${result[0]}`;
+  const tablNameIsExist = await modelStructure.detailIsExist(tableName);
+
+  if (!tablNameIsExist) {
+    await modelStructure.createDetail(tableName, data);
+    emit("add_classification", 200);
+    return api.success(res, "Add Successfully");
+  }
 
   emit("add_classification", 200);
 

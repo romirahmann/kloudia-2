@@ -110,7 +110,7 @@ export function StructurePage() {
           <div className="addTenant">
             <Button
               onClick={() => handleOpenModal("ADD", null)}
-              className="btn-open-filter flex justify-center items-center gap-1 border rounded-md p-2 border-primary  text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
+              className="btn-open-filter flex justify-center items-center gap-1 border rounded-md px-2 py-3 border-primary  text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
             >
               <FaPlus />
               <span>Add</span>
