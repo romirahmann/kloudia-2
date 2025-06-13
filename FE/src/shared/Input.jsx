@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 
 export const Input = React.forwardRef(
@@ -13,6 +14,7 @@ export const Input = React.forwardRef(
       onKeyDown,
       label = "",
       id = "",
+      ...rest
     },
     ref
   ) => {
@@ -32,6 +34,7 @@ export const Input = React.forwardRef(
           placeholder={`${placeholder} ...`}
           onKeyDown={onKeyDown}
           className={`dark:text-gray-50 px-2 py-3 border w-full bg-transparent rounded-xl text-sm md:text-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border-gray-300 placeholder:lg:text-sm placeholder:text-xs ${className}`}
+          {...rest}
         />
       </>
     );

@@ -1,18 +1,26 @@
 /* eslint-disable no-unused-vars */
 import { Link, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiDocumentPlus } from "react-icons/hi2";
 import api from "../../services/axios.service";
 import { Form } from "../../shared/Form";
 import { Input } from "../../shared/Input";
 import { Button } from "../../shared/Button";
+import { AnimatePresence } from "framer-motion";
+import { AlertMessage } from "../../shared/Alert";
 
 export function AddDocument() {
   const { classificationId, cabinetId } = useSearch({});
   const [structures, setStructures] = useState([]);
   const [formData, setFormData] = useState({});
-
+  const [selectedFiles, setSelectedFiles] = useState(null);
+  const [showAlert, setShowAlert] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
+  const fileInputRef = useRef(null);
   useEffect(() => {
     if (classificationId) {
       fetchClassificications();
@@ -22,6 +30,7 @@ export function AddDocument() {
   const fetchClassificications = async () => {
     try {
       const res = await api.get(`/master/structures/${classificationId}`);
+      console.log(res.data.data);
       setStructures(res.data.data);
 
       const initialData = {};
@@ -50,6 +59,10 @@ export function AddDocument() {
     }
   };
 
+  const handleOnChangeFiles = (e) => {
+    setSelectedFiles(e.target.files);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -62,11 +75,33 @@ export function AddDocument() {
     data.append("cabinetId", cabinetId);
 
     try {
-      const res = await api.post("/master/upload-document", data);
-      console.log(res.data.data);
+      await api.post("/master/upload-document", data);
+
+      // Reset form input dan file
+      const resetData = {};
+      structures.forEach((item) => {
+        resetData[item.structureDescription] = "";
+      });
+      setFormData(resetData);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
+
+      // Tampilkan alert
+      setShowAlert({
+        show: true,
+        message: "Document uploaded successfully",
+        type: "success",
+      });
     } catch (error) {
       console.error(error.response?.data || error.message);
     }
+  };
+
+  const uploadFolder = async (e) => {
+    e.preventDefault();
+    console.log(selectedFiles);
   };
 
   return (
@@ -84,57 +119,109 @@ export function AddDocument() {
         <h1 className="">ADD DOCUMENT</h1>
       </div>
       <div className="max-w-full rounded-md py-4 px-6 bg-white">
-        <Form>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {structures &&
-              structures.map((item, index) => (
-                <div key={index}>
-                  {item.typeId === 3 ? (
-                    <Input
-                      id={item.structureDescription}
-                      label={item.structureName}
-                      name={item.structureDescription}
-                      type="date"
-                      placeholder={item.structureName}
-                      onChange={handleOnChange}
-                    />
-                  ) : (
-                    <Input
-                      id={item.structureDescription}
-                      label={item.structureName}
-                      name={item.structureDescription}
-                      placeholder={item.structureName}
-                      onChange={handleOnChange}
-                    />
-                  )}
-                </div>
-              ))}
+        {structures.length !== 0 ? (
+          <Form>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {structures &&
+                structures.map((item, index) => (
+                  <div key={index}>
+                    {item.typeId === 3 ? (
+                      <Input
+                        id={item.structureDescription}
+                        label={item.structureName}
+                        name={item.structureDescription}
+                        value={formData[item.structureDescription] || ""}
+                        type="date"
+                        ref={fileInputRef}
+                        placeholder={item.structureName}
+                        onChange={handleOnChange}
+                      />
+                    ) : (
+                      <Input
+                        id={item.structureDescription}
+                        label={item.structureName}
+                        value={formData[item.structureDescription] || ""}
+                        name={item.structureDescription}
+                        placeholder={item.structureName}
+                        ref={fileInputRef}
+                        onChange={handleOnChange}
+                      />
+                    )}
+                  </div>
+                ))}
 
-            {/* Input file */}
-            <div>
-              <label htmlFor="file" className="block text-sm mb-1">
-                Upload File
-              </label>
-              <input
-                id="file"
-                name="file"
-                type="file"
-                accept="*"
-                onChange={handleOnChange}
-                className="w-full rounded-xl border border-gray-300 p-2 cursor-pointer text-sm text-gray-700"
-              />
+              {/* Input file */}
+              <div>
+                <label htmlFor="file" className="block text-sm mb-1">
+                  Upload File
+                </label>
+                <input
+                  id="file"
+                  name="file"
+                  type="file"
+                  accept="*"
+                  onChange={handleOnChange}
+                  className="w-full rounded-xl border border-gray-300 p-2 cursor-pointer text-sm text-gray-700"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="mt-4">
-            <Button
-              onClick={handleSubmit}
-              className="text-md bg-primary rounded-xl text-white py-2 px-6 hover:bg-dark-primary"
-            >
-              SUBMIT
-            </Button>
+            <div className="mt-4">
+              <Button
+                onClick={handleSubmit}
+                className="text-md bg-primary rounded-xl text-white py-2 px-6 hover:bg-dark-primary"
+              >
+                SUBMIT
+              </Button>
+            </div>
+          </Form>
+        ) : (
+          <div className="mx-auto w-full">
+            <Form>
+              <div>
+                <h1 className="text-xl font-bold uppercase m-2">
+                  Upload Document
+                </h1>
+                <div className="flex w-full gap-2">
+                  <div className="inputFolder w-full">
+                    <Input
+                      id="files"
+                      name="files"
+                      type="file"
+                      placeholder="Select Folder ..."
+                      multiple
+                      webkitdirectory="true"
+                      className="block w-full text-sm text-gray-700
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-md file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-primary file:text-white
+                      hover:file:bg-dark-primary
+                      cursor-pointer"
+                      onChange={handleOnChangeFiles}
+                    />
+                  </div>
+                  <Button
+                    onClick={uploadFolder}
+                    className="text-md bg-primary rounded-xl text-white py-1 px-3 hover:bg-dark-primary"
+                  >
+                    SUBMIT
+                  </Button>
+                </div>
+              </div>
+            </Form>
           </div>
-        </Form>
+        )}
+        {/* ALERT */}
+        <AnimatePresence>
+          {showAlert.show && (
+            <AlertMessage
+              message={`${showAlert.message}`}
+              type={`${showAlert.type}`}
+              onClose={() => setShowAlert((prev) => ({ ...prev, show: false }))}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { AiOutlineFileAdd } from "react-icons/ai";
-import { FaEye, FaFolder } from "react-icons/fa";
+import { FaEye, FaFolder, FaFolderPlus } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdOutlineDeleteForever } from "react-icons/md";
@@ -137,6 +137,25 @@ export function DocumentsPage() {
           },
         });
         break;
+      case "UPLOAD_FOLDER":
+        if (!selectedDetail) {
+          setShowAlert({
+            show: true,
+            message: "Choose document first!",
+            type: "warning",
+          });
+          return;
+        }
+        navigate({
+          to: "/share-document",
+          search: {
+            originalName: selectedDetail.fileName,
+            filename: selectedDetail.encryption_title,
+            key: selectedDetail.key,
+            iv: selectedDetail.iv,
+          },
+        });
+        break;
       default:
         break;
     }
@@ -220,6 +239,7 @@ export function DocumentsPage() {
                         <AiOutlineFileAdd />
                       </div>
                     </Button>
+
                     <div className="border border-primary hover:text-white hover:bg-primary dark:border-white p-2 rounded-md">
                       <FiEdit />
                     </div>
