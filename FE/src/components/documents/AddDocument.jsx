@@ -30,7 +30,7 @@ export function AddDocument() {
   const fetchClassificications = async () => {
     try {
       const res = await api.get(`/master/structures/${classificationId}`);
-      console.log(res.data.data);
+
       setStructures(res.data.data);
 
       const initialData = {};

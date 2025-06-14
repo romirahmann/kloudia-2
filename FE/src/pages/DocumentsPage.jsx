@@ -40,7 +40,6 @@ export function DocumentsPage() {
         const res = await api.get(
           `/master/details/${selectedClassification.classificationId}`
         );
-        console.log(res.data.data);
         setDataDetail(res.data.data);
       } catch (error) {
         console.log(error.response);
@@ -198,7 +197,7 @@ export function DocumentsPage() {
                 classifications.map((classification) => {
                   return (
                     <button
-                      key={classification + 1}
+                      key={classification.classificationId + 1}
                       onClick={() => setSelectedClassification(classification)}
                     >
                       <div className="flex items-center gap-1 md:gap-2 ps-4 py-2 md:ps-5 text-sm lg:text-md hover:text-primary">
