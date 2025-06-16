@@ -9,6 +9,7 @@ import { Input } from "../../shared/Input";
 import { Button } from "../../shared/Button";
 import { AnimatePresence } from "framer-motion";
 import { AlertMessage } from "../../shared/Alert";
+// import { Button } from "../../shared/Button";
 
 export function AddDocument() {
   const { classificationId, cabinetId } = useSearch({});
@@ -20,6 +21,8 @@ export function AddDocument() {
     message: "",
     type: "",
   });
+  const [menuIsActive, setMenuIsActive] = useState("document");
+
   const fileInputRef = useRef(null);
   useEffect(() => {
     if (classificationId) {
@@ -104,6 +107,10 @@ export function AddDocument() {
     console.log(selectedFiles);
   };
 
+  const handleChangeMenu = (menu) => {
+    setMenuIsActive(menu);
+  };
+
   return (
     <>
       <div className="btn-back  w-[5em] mb-2 p-3 ">
@@ -118,65 +125,99 @@ export function AddDocument() {
         <HiDocumentPlus />
         <h1 className="">ADD DOCUMENT</h1>
       </div>
-      <div className="max-w-full rounded-md py-4 px-6 bg-white">
-        {structures.length !== 0 ? (
-          <Form>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {structures &&
-                structures.map((item, index) => (
-                  <div key={index}>
-                    {item.typeId === 3 ? (
-                      <Input
-                        id={item.structureDescription}
-                        label={item.structureName}
-                        name={item.structureDescription}
-                        value={formData[item.structureDescription] || ""}
-                        type="date"
-                        ref={fileInputRef}
-                        placeholder={item.structureName}
-                        onChange={handleOnChange}
-                      />
-                    ) : (
-                      <Input
-                        id={item.structureDescription}
-                        label={item.structureName}
-                        value={formData[item.structureDescription] || ""}
-                        name={item.structureDescription}
-                        placeholder={item.structureName}
-                        ref={fileInputRef}
-                        onChange={handleOnChange}
-                      />
-                    )}
+      <div className="menu flex">
+        <Button onClick={() => handleChangeMenu("document")}>
+          <div
+            className={`text-center w-32 p-2 rounded-t-xl text-sm
+        ${
+          menuIsActive === "document"
+            ? "bg-white  text-black"
+            : "bg-gray-100  text-gray-600"
+        }`}
+          >
+            Add Document
+          </div>
+        </Button>
+        <Button onClick={() => handleChangeMenu("folder")}>
+          <div
+            className={`text-center w-32 p-2 rounded-t-xl text-sm  
+        ${
+          menuIsActive === "folder"
+            ? "bg-white text-black"
+            : "bg-gray-100  text-gray-600"
+        }`}
+          >
+            Upload Folder
+          </div>
+        </Button>
+      </div>
+      <div className="max-w-full rounded-b-md py-4 px-6 bg-white">
+        {menuIsActive === "document" && (
+          <div id="uploadFile">
+            {structures.length !== 0 ? (
+              <Form>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {structures &&
+                    structures.map((item, index) => (
+                      <div key={index}>
+                        {item.typeId === 3 ? (
+                          <Input
+                            id={item.structureDescription}
+                            label={item.structureName}
+                            name={item.structureDescription}
+                            value={formData[item.structureDescription] || ""}
+                            type="date"
+                            ref={fileInputRef}
+                            placeholder={item.structureName}
+                            onChange={handleOnChange}
+                          />
+                        ) : (
+                          <Input
+                            id={item.structureDescription}
+                            label={item.structureName}
+                            value={formData[item.structureDescription] || ""}
+                            name={item.structureDescription}
+                            placeholder={item.structureName}
+                            ref={fileInputRef}
+                            onChange={handleOnChange}
+                          />
+                        )}
+                      </div>
+                    ))}
+
+                  {/* Input file */}
+                  <div>
+                    <label htmlFor="file" className="block text-sm mb-1">
+                      Upload File
+                    </label>
+                    <input
+                      id="file"
+                      name="file"
+                      type="file"
+                      accept="*"
+                      onChange={handleOnChange}
+                      className="w-full rounded-xl border border-gray-300 p-2 cursor-pointer text-sm text-gray-700"
+                    />
                   </div>
-                ))}
+                </div>
 
-              {/* Input file */}
-              <div>
-                <label htmlFor="file" className="block text-sm mb-1">
-                  Upload File
-                </label>
-                <input
-                  id="file"
-                  name="file"
-                  type="file"
-                  accept="*"
-                  onChange={handleOnChange}
-                  className="w-full rounded-xl border border-gray-300 p-2 cursor-pointer text-sm text-gray-700"
-                />
-              </div>
-            </div>
+                <div className="mt-4">
+                  <Button
+                    onClick={handleSubmit}
+                    className="text-md bg-primary rounded-xl text-white py-2 px-6 hover:bg-dark-primary"
+                  >
+                    SUBMIT
+                  </Button>
+                </div>
+              </Form>
+            ) : (
+              <h1>Data Not Found!</h1>
+            )}
+          </div>
+        )}
 
-            <div className="mt-4">
-              <Button
-                onClick={handleSubmit}
-                className="text-md bg-primary rounded-xl text-white py-2 px-6 hover:bg-dark-primary"
-              >
-                SUBMIT
-              </Button>
-            </div>
-          </Form>
-        ) : (
-          <div className="mx-auto w-full">
+        {menuIsActive === "folder" && (
+          <div id="uploadFolder" className="mx-auto w-full">
             <Form>
               <div>
                 <h1 className="text-xl font-bold uppercase m-2">
@@ -210,6 +251,17 @@ export function AddDocument() {
                 </div>
               </div>
             </Form>
+
+            <p className="text-yellow-600 mt-1 text-md">
+              * Struktur folder disesuaikan dengan struktur pada sistem
+            </p>
+            <p className="text-sm mt-2">
+              "
+              {structures.length > 0
+                ? structures.map((item) => item.structureName).join("/")
+                : "Tidak ada struktur"}
+              "
+            </p>
           </div>
         )}
         {/* ALERT */}

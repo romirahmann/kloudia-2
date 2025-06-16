@@ -74,6 +74,7 @@ router.get(
   "/filter/structure/:classificationId",
   StructureController.getAllBySearch
 );
+router.get("/file-manager", StructureController.getGlobalFileTree);
 router.post("/structure", StructureController.insertStructure);
 router.put("/structure/:structureId", StructureController.updateStructure);
 router.get("/typedata", StructureController.getAllTypeData);

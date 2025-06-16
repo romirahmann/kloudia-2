@@ -1,7 +1,9 @@
 const { default: camelcase } = require("camelcase");
 const modelStructure = require("../../models/structure.model");
+const modelClassification = require("../../models/classification.model");
 const { emit } = require("../../services/socket.service");
 const api = require("../../tools/common");
+const moment = require("moment");
 
 const getAllStructure = api.catchAsync(async (req, res) => {
   const result = await modelStructure.getAll();
@@ -107,6 +109,78 @@ const deletedDetail = api.catchAsync(async (req, res) => {
   return api.success(res, result);
 });
 
+const getGlobalFileTree = api.catchAsync(async (req, res) => {
+  const classifications = await modelClassification.getAll();
+
+  const response = [];
+
+  for (const cls of classifications) {
+    const classificationId = cls.classificationId;
+    const classificationName = cls.classificationName;
+
+    const structures = await modelStructure.getByClassificationId(
+      classificationId
+    );
+    const tableName = `tbl_detail${classificationId}`;
+
+    let details = [];
+    try {
+      details = await modelStructure.getAllDetail(tableName);
+    } catch (err) {
+      console.warn(
+        `Failed to fetch detail for classification ${classificationId}:`,
+        err.message
+      );
+    }
+
+    if (details.length === 0) {
+      response.push({
+        classificationId,
+        classificationName,
+        detailId: null,
+        path: classificationName,
+        documents: [],
+      });
+      continue;
+    }
+
+    for (const detail of details) {
+      const path = [
+        classificationName,
+        ...structures
+          .slice(0, -1) // ambil semua kecuali struktur terakhir (file name)
+          .map((s) => {
+            const val = detail[s.structureDescription];
+
+            if (s.typeId === 3 && val) {
+              return moment(val).format("YYYYMMDD");
+            }
+
+            return val !== null && val !== undefined ? `${val}` : "-";
+          }),
+      ].join("/");
+
+      const doc = {
+        documentId: detail.documentId,
+        encryption_title: detail.encryption_title,
+        versionNumber: detail.versionNumber,
+        versionPath: detail.versionPath,
+        isLatest: detail.isLatest,
+      };
+
+      response.push({
+        classificationId,
+        classificationName,
+        detailId: detail.detailId,
+        path,
+        documents: [doc].filter((d) => d.documentId),
+      });
+    }
+  }
+
+  return api.success(res, response);
+});
+
 // TYPE DATA
 const getAllTypeData = api.catchAsync(async (req, res) => {
   const result = await modelStructure.getAllType();
@@ -124,4 +198,5 @@ module.exports = {
   deletedDetail,
   getAllDetailById,
   getAllBySearch,
+  getGlobalFileTree,
 };
