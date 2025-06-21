@@ -7,10 +7,10 @@ import { useNavigate } from "@tanstack/react-router";
 import { MdOutlineDarkMode, MdOutlineWbSunny } from "react-icons/md";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDarkMode } from "../store/ThemeContext";
+import { Search } from "../shared/Search";
 
 export function Topbar({ isOpen, onToggle, titleData }) {
   const [profilIsOpen, setProfilIsOpen] = useState(false);
-
   const { theme, toggleTheme } = useDarkMode();
   const [user, setUser] = useState({ fullname: "", role: "" });
   const { logout } = useAuth();
@@ -42,9 +42,13 @@ export function Topbar({ isOpen, onToggle, titleData }) {
     navigate({ to: "/login" });
   };
 
+  const handleOnChangeSearch = (e) => {
+    console.log(e.target.value);
+  };
+
   return (
     <>
-      <div className="relative bg-white dark:bg-gray-950 pe-4 py-3 dark:shadow-gray-800  shadow-md flex items-center justify-between ">
+      <div className="relative bg-white dark:bg-gray-950 pe-4 py-2 dark:shadow-gray-800  shadow-md flex items-center justify-between ">
         {!isOpen && (
           <button
             onClick={() => onToggle(!isOpen)}
@@ -54,14 +58,27 @@ export function Topbar({ isOpen, onToggle, titleData }) {
           </button>
         )}
 
+        {/* TITLE */}
         <div className="page ms-5 flex flex-col">
-          <h1 className="text-xl lg:text-2xl font-bold dark:text-gray-50">
+          <h1 className="text-md lg:text-xl font-bold dark:text-gray-50">
             {titleData?.titlePage}
           </h1>
           <p className="text-[9px] lg:text-sm text-gray-500 dark:text-gray-300">
             {titleData?.titleDesc}
           </p>
         </div>
+        {/* SEARCH */}
+        <div
+          className={` ${
+            !isOpen ? "lg:w-[50em]" : "lg:w-[30em]"
+          } ms-auto  w-[25em] `}
+        >
+          <Search
+            onChange={(e) => handleOnChangeSearch(e)}
+            placeholder="Search  ..."
+          />
+        </div>
+        {/* USERS */}
         <div className="profilIcon ms-auto flex items-center">
           <button
             onClick={toggleTheme}

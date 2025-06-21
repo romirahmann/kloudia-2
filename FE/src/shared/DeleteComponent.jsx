@@ -19,7 +19,7 @@ export function DeleteComponent({ onDelete, onClose }) {
           </motion.div>
         </AnimatePresence>
         <h1 className="text-center text-gray-800 my-10">
-          Are you sure for delete this data ?{" "}
+          Are you sure for delete this data ?
         </h1>
         <div className="btn flex justify-end gap-2">
           <Button

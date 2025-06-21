@@ -73,7 +73,6 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
             </AnimatePresence>
           </button>
 
-          {/* Render submenu jika ada dan sedang dibuka */}
           {hasChildren && isSubmenuOpen && isOpen && (
             <div className="pl-9 flex flex-col gap-1">
               {item.children.map((child, index) => (
