@@ -3,9 +3,49 @@ import { MdDeleteForever } from "react-icons/md";
 import { Tooltip } from "react-tooltip";
 import { Table } from "../../shared/Table";
 import moment from "moment";
+import { useEffect, useState } from "react";
 
-export function TableGroup({ onAction, data }) {
+// eslint-disable-next-line no-unused-vars
+export function TableGroup({ data, handleSelected, resetTrigger }) {
+  const [checkedId, setCheckedId] = useState(null); // untuk simpan ID user yang dicentang
+
+  useEffect(() => {
+    // Reset checkbox saat trigger berubah (modal ditutup)
+    setCheckedId(null);
+  }, [resetTrigger]);
+
   const coloumns = [
+    {
+      header: (
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            const checked = e.target.checked;
+            if (!checked) {
+              handleSelected(null);
+              setCheckedId(null);
+            }
+          }}
+        />
+      ),
+      key: "__checkbox",
+      render: (_, row) => (
+        <input
+          type="checkbox"
+          checked={checkedId === row.grupId}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            if (checked) {
+              handleSelected(row);
+              setCheckedId(row.grupId);
+            } else {
+              handleSelected(null);
+              setCheckedId(null);
+            }
+          }}
+        />
+      ),
+    },
     { header: "Group Name", key: "grupName" },
     { header: "Group Description", key: "grupDescription" },
     {
@@ -21,45 +61,9 @@ export function TableGroup({ onAction, data }) {
     },
   ];
 
-  const renderActions = (row, index) => {
-    return (
-      <>
-        <button
-          data-tooltip-id={`edit-${index}`}
-          data-tooltip-content="Edit"
-          onClick={() => onAction({ type: "EDIT", data: row })}
-          className="text-green-600 text-xl"
-        >
-          <FaEdit />
-          <Tooltip
-            id={`edit-${index}`}
-            place="top"
-            closeOnClick
-            className="z-50 bg-gray-800 text-white text-xs px-2 py-1 rounded"
-          />
-        </button>
-
-        <button
-          data-tooltip-id={`delete-${index}`}
-          data-tooltip-content="Delete"
-          onClick={() => onAction({ type: "DELETE", data: row })}
-          className="text-red-600 text-xl"
-        >
-          <MdDeleteForever />
-          <Tooltip
-            id={`delete-${index}`}
-            place="top"
-            closeOnClick
-            className="z-50 bg-gray-800 text-white text-xs px-2 py-1 rounded"
-          />
-        </button>
-      </>
-    );
-  };
-
   return (
     <>
-      <Table columns={coloumns} data={data} actionRenderer={renderActions} />
+      <Table columns={coloumns} data={data} />
     </>
   );
 }

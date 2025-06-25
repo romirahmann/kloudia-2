@@ -8,6 +8,7 @@ import { MdOutlineDarkMode, MdOutlineWbSunny } from "react-icons/md";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDarkMode } from "../store/ThemeContext";
 import { Search } from "../shared/Search";
+import { useSearchComponent } from "../store/SearchContext";
 
 export function Topbar({ isOpen, onToggle, titleData }) {
   const [profilIsOpen, setProfilIsOpen] = useState(false);
@@ -16,6 +17,7 @@ export function Topbar({ isOpen, onToggle, titleData }) {
   const { logout } = useAuth();
   const useRefProfil = useRef(null);
   const navigate = useNavigate();
+  const { searchQuery, onChangeSearch } = useSearchComponent();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -43,7 +45,7 @@ export function Topbar({ isOpen, onToggle, titleData }) {
   };
 
   const handleOnChangeSearch = (e) => {
-    console.log(e.target.value);
+    onChangeSearch(e);
   };
 
   return (

@@ -34,8 +34,8 @@ export function LayoutRoot() {
             onToggle={() => setIsOpen(!isOpen)}
             titleData={titleData}
           />
-          <main className="px-4 py-6 bg-gray-200 dark:bg-gray-900 flex-1 overflow-y-auto overflow-x-hidden  min-w-0">
-            <div className="min-w-0 overflow-x-auto">
+          <main className="px-1 py-1 bg-gray-200 dark:bg-gray-900 flex-1 overflow-y-auto overflow-x-hidden  min-w-0">
+            <div className="">
               <Outlet />
             </div>
           </main>

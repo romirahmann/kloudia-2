@@ -65,8 +65,50 @@ function ActionDropdown({ position, row, onClose, onAction }) {
   );
 }
 
-export function TableClassification({ data, actionTable }) {
+export function TableClassification({
+  data,
+  actionTable,
+  resetTrigger,
+  handleSelected,
+}) {
+  const [checkedId, setCheckedId] = useState(null);
+
+  useEffect(() => {
+    setCheckedId(null);
+  }, [resetTrigger]);
+
   const columns = [
+    {
+      header: (
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            const checked = e.target.checked;
+            if (!checked) {
+              handleSelected(null);
+              setCheckedId(null);
+            }
+          }}
+        />
+      ),
+      key: "__checkbox",
+      render: (_, row) => (
+        <input
+          type="checkbox"
+          checked={checkedId === row.classificationId}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            if (checked) {
+              handleSelected(row);
+              setCheckedId(row.classificationId);
+            } else {
+              handleSelected(null);
+              setCheckedId(null);
+            }
+          }}
+        />
+      ),
+    },
     { header: "Name", key: "classificationName" },
     { header: "Description", key: "classificationDescription" },
     {
@@ -142,7 +184,7 @@ export function TableClassification({ data, actionTable }) {
 
   return (
     <>
-      <Table columns={columns} data={data} actionRenderer={renderActions} />
+      <Table columns={columns} data={data} />
       {dropdown.show && (
         <ActionDropdown
           position={dropdown.position}

@@ -21,24 +21,20 @@ import { AddDocument } from "../components/documents/AddDocument";
 import { ViewDocumentPage } from "../pages/ViewDocumentPage";
 import { SharedDocument } from "../pages/SharedDocument";
 
-// 1. Buat root route
 const rootRoute = createRootRoute();
 
-// 2. Route untuk layout protected (butuh login)
 const protectedLayout = createRoute({
   getParentRoute: () => rootRoute,
   id: "protected-layout",
   component: ProtectedRoute,
 });
 
-// 3. Layout utama setelah login
 const layoutRoute = createRoute({
   getParentRoute: () => protectedLayout,
   id: "layout-root",
   component: LayoutRoot,
 });
 
-// 4. Daftar halaman di bawah layoutRoute secara eksplisit
 const dashboardRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/",

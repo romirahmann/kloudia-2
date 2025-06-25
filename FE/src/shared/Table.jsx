@@ -7,13 +7,17 @@ export function Table({
   actionRenderer,
   rowsPerPage = 10,
 }) {
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({
+    key: "createdAt",
+    direction: "desc",
+  });
   const [currentPage, setCurrentPage] = useState(1);
 
   const sortedData = useMemo(() => {
-    if (!sortConfig.key) return data;
+    const dataArray = Array.isArray(data) ? data : [];
+    if (!sortConfig.key) return dataArray;
 
-    return [...data].sort((a, b) => {
+    return [...dataArray].sort((a, b) => {
       const valA = a[sortConfig.key];
       const valB = b[sortConfig.key];
 
@@ -24,6 +28,7 @@ export function Table({
   }, [data, sortConfig]);
 
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * rowsPerPage;
     return sortedData.slice(start, start + rowsPerPage);
@@ -40,9 +45,13 @@ export function Table({
     }
   };
 
+  const totalItems = sortedData.length;
+  const startItem = totalItems === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+  const endItem = Math.min(currentPage * rowsPerPage, totalItems);
+
   return (
     <>
-      {/* TABEL */}
+      {/* TABLE */}
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>
@@ -104,7 +113,7 @@ export function Table({
               <tr>
                 <td
                   colSpan={columns.length + (actionRenderer ? 1 : 0)}
-                  className="text-center text-sm px-4 py-4 border-b"
+                  className="text-center dark:text-gray-200 text-sm px-4 py-4 border-b"
                 >
                   Data Not Found
                 </td>
@@ -114,37 +123,76 @@ export function Table({
         </table>
       </div>
 
-      {/* PAGINATION DI LUAR TABEL */}
-      <div className="flex justify-end items-center mt-6 space-x-2">
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-          disabled={currentPage === 1}
-          className="px-3 py-1 dark:text-white border rounded disabled:opacity-50"
-        >
-          Prev
-        </button>
+      {/* Pagination Info */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 gap-2">
+        <div className="text-sm text-gray-700 dark:text-gray-300">
+          {totalItems > 0 ? (
+            <>
+              Showing <strong>{startItem}</strong>–<strong>{endItem}</strong> of{" "}
+              <strong>{totalItems}</strong> entries
+            </>
+          ) : (
+            "Tidak ada dokumen untuk ditampilkan"
+          )}
+        </div>
 
-        {[...Array(totalPages).keys()].map((num) => (
+        {/* Pagination Controls */}
+        <div className="flex justify-end items-center space-x-2">
           <button
-            key={num}
-            onClick={() => setCurrentPage(num + 1)}
-            className={`px-3 py-1 border rounded ${
-              currentPage === num + 1
-                ? "bg-primary text-white"
-                : "bg-white text-black"
-            }`}
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 dark:text-white border rounded disabled:opacity-50"
           >
-            {num + 1}
+            Prev
           </button>
-        ))}
 
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-          disabled={currentPage === totalPages}
-          className="dark:text-white px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
+          {Array.from({ length: totalPages })
+            .map((_, i) => i + 1)
+            .filter((page) => {
+              return (
+                page === 1 ||
+                page === totalPages ||
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              );
+            })
+            .reduce((acc, page, idx, arr) => {
+              if (idx > 0 && page - arr[idx - 1] > 1) {
+                acc.push("...");
+              }
+              acc.push(page);
+              return acc;
+            }, [])
+            .map((page, index) =>
+              page === "..." ? (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-3 py-1 text-gray-500"
+                >
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-3 py-1 border rounded ${
+                    currentPage === page
+                      ? "bg-primary text-white"
+                      : "bg-white text-black"
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="dark:text-white px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </>
   );

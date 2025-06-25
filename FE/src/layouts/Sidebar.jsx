@@ -12,7 +12,6 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
   const [openSubmenuId, setOpenSubmenuId] = useState(null);
   const navigate = useNavigate();
 
-  // SIDEBAR MENU
   const renderMenuItems = () =>
     sidebarMenu.map((item) => {
       const Icon = item.icon;
@@ -21,6 +20,7 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
 
       return (
         <div className="w-full" key={item.id}>
+          {/* BUTTON UTAMA */}
           <button
             onClick={() => {
               if (hasChildren) {
@@ -36,14 +36,24 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
                 });
               }
             }}
-            key={item.id}
-            className="list-items group flex items-center gap-2 py-2 md:py-3 md:ps-3 dark:text-white font-bold cursor-pointer"
+            className="list-items group flex items-center gap-2 py-2 md:py-3 md:ps-2 dark:text-white font-bold cursor-pointer w-full text-left"
           >
-            <Icon
-              data-tooltip-id={`tooltip-${item.id}`}
-              data-tooltip-content={item.name}
-              className="group-hover:text-primary group-hover:dark:text-white md:text-2xl"
-            />
+            {/* ICON (bukan button, agar tidak nested) */}
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!hasChildren) return;
+                setOpenSubmenuId(isSubmenuOpen ? null : item.id);
+              }}
+            >
+              <Icon
+                data-tooltip-id={`tooltip-${item.id}`}
+                data-tooltip-content={item.name}
+                className="group-hover:text-primary group-hover:dark:text-white md:text-2xl"
+              />
+            </span>
+
+            {/* Tooltip jika sidebar tertutup */}
             {!isOpen && (
               <Tooltip
                 id={`tooltip-${item.id}`}
@@ -52,20 +62,15 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
               />
             )}
 
+            {/* Text animasi jika sidebar terbuka */}
             <AnimatePresence>
               {isOpen && (
                 <motion.span
                   key={`menu-text-${item.id}`}
                   initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    transition: { duration: 0.5 },
-                  }}
-                  exit={{
-                    opacity: 0,
-                    transition: { duration: 0.1 },
-                  }}
-                  className={` group-hover:text-primary group-hover:dark:text-white md:text-xl text-sm`}
+                  animate={{ opacity: 1, transition: { duration: 1.5 } }}
+                  exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                  className="group-hover:text-primary group-hover:dark:text-white md:text-xl text-sm"
                 >
                   {item.name.toUpperCase()}
                 </motion.span>
@@ -73,6 +78,7 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
             </AnimatePresence>
           </button>
 
+          {/* SUBMENU */}
           {hasChildren && isSubmenuOpen && isOpen && (
             <div className="pl-9 flex flex-col gap-1">
               {item.children.map((child, index) => (
@@ -99,11 +105,10 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
       );
     });
 
-  // TAMPILAN MOBILE
+  // MOBILE
   if (isMobile) {
     return (
       <>
-        {/* Overlay */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -118,7 +123,6 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
           )}
         </AnimatePresence>
 
-        {/* Sidebar */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -129,7 +133,6 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="fixed top-0 left-0 z-[9999] w-72 h-full bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 "
             >
-              {/* Header */}
               <div className="flex items-center py-4 ps-4">
                 <img src="/icon/icon-dms.png" className="w-6 h-6" alt="Logo" />
                 <motion.h1
@@ -150,7 +153,6 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
                 </button>
               </div>
 
-              {/* Menu Items */}
               <div className="menu flex flex-col p-4">{renderMenuItems()}</div>
             </motion.div>
           )}
@@ -159,46 +161,44 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
     );
   }
 
-  // TAMPILAN DESKTOP
+  // DESKTOP
   return (
-    <>
-      <motion.div
-        animate={{ width: isOpen ? 300 : 75 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="min-h-full shadow-md dark:shadow-gray-900 dark:bg-gray-950"
+    <motion.div
+      animate={{ width: isOpen ? "14em" : "4em" }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="min-h-full dark:shadow-gray-900 dark:bg-gray-950"
+    >
+      <div
+        className={`flex items-center ${isOpen ? "py-3 ps-4" : "py-4 px-4"}`}
       >
-        <div
-          className={`flex items-center ${isOpen ? "py-4 ps-4" : "py-4 px-4"}`}
+        <img src="/icon/icon-dms.png" className="w-7" alt="Logo" />
+        <AnimatePresence>
+          {isOpen && (
+            <motion.h1
+              key="logo-text"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+              className="text-3xl font-bold ms-2 dark:text-gray-50"
+            >
+              Kloudia
+            </motion.h1>
+          )}
+        </AnimatePresence>
+        <button
+          onClick={() => onToggle(!isOpen)}
+          className={`${
+            isOpen ? "block" : "hidden"
+          } ms-auto bg-primary ps-1 py-3 rounded-s-xl text-white dark:text-gray-50 text-sm`}
         >
-          <img src="/icon/icon-dms.png" className="w-10 h-10" alt="Logo" />
-          <AnimatePresence>
-            {isOpen && (
-              <motion.h1
-                key="logo-text"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.3 }}
-                className="text-3xl font-bold ms-2 dark:text-gray-50"
-              >
-                Kloudia
-              </motion.h1>
-            )}
-          </AnimatePresence>
-          <button
-            onClick={() => onToggle(!isOpen)}
-            className={`${
-              isOpen ? "block" : "hidden"
-            } ms-auto bg-primary ps-1 py-3 rounded-s-xl text-white dark:text-gray-50 text-sm`}
-          >
-            <FaChevronLeft />
-          </button>
-        </div>
-        <hr className="border mt-1 dark:border-gray-900" />
-        <div className={`flex items-center ${isOpen ? "py-4" : "py-4 "}`}>
-          <div className="py-5 px-2">{renderMenuItems()}</div>
-        </div>
-      </motion.div>
-    </>
+          <FaChevronLeft />
+        </button>
+      </div>
+      <hr className="border mt-1 dark:border-gray-900" />
+      <div className={`flex items-center ${isOpen ? "py-1" : "py-3"}`}>
+        <div className="px-2 w-full">{renderMenuItems()}</div>
+      </div>
+    </motion.div>
   );
 }

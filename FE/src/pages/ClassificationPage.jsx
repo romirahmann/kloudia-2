@@ -4,11 +4,17 @@ import api from "../services/axios.service";
 import { listenToUpdate } from "../services/socket.service";
 import { Search } from "../shared/Search";
 import { Button } from "../shared/Button";
-import { FaPlus } from "react-icons/fa";
+import { FaCheck, FaPlus } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
 import { AlertMessage } from "../shared/Alert";
 import { TableClassification } from "../components/classifications/TableClassification";
 import { ModalClassification } from "../components/classifications/ModalClassification";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import { FiEdit } from "react-icons/fi";
+import { MdBlock, MdDelete } from "react-icons/md";
+import { LuFilter } from "react-icons/lu";
+import { Link } from "@tanstack/react-router";
+import { GrView } from "react-icons/gr";
 
 export function ClassificationPage() {
   const [classifictaions, setClassification] = useState([]);
@@ -24,6 +30,8 @@ export function ClassificationPage() {
     type: "",
   });
 
+  const [selectedClassification, setSelectedClassification] = useState(null);
+  const [isOpenFilter, setOpenFilter] = useState(false);
   const [filter, setFilter] = useState({
     search: "",
     status: "",
@@ -86,32 +94,147 @@ export function ClassificationPage() {
   };
   const handleCloseModal = () => {
     setModal({ open: false, type: "", data: "" });
+    setSelectedClassification(null);
   };
 
   return (
     <>
-      <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md p-9">
-        <div className="filter flex items-center gap-2">
-          <Search
-            onChange={(e) => handleOnChangeSearh(e)}
-            placeholder="Search name or description ..."
-          />
-
-          <div className="addTenant">
-            <Button
-              onClick={() => handleOpenModal("ADD", null)}
-              className="btn-open-filter flex justify-center items-center gap-1 border rounded-md px-2 py-3 border-primary  text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
+      <div className="action">
+        <div className="toolbar flex gap-2 bg-white dark:bg-gray-950 mb-2 p-2">
+          {selectedClassification ? (
+            <Link
+              to={"/structure"}
+              search={{
+                classificationId: selectedClassification.classificationId,
+              }}
+              className="border p-2 rounded-md flex items-center justify-center border-primary hover:bg-primary hover:text-white dark:border-white dark:text-white"
             >
-              <FaPlus />
-              <span>Add</span>
-            </Button>
-          </div>
-        </div>
+              <GrView />
+            </Link>
+          ) : (
+            <button
+              onClick={() =>
+                setShowAlert({
+                  show: true,
+                  message: "Please select a classification",
+                  type: "warning",
+                })
+              }
+              className="bg-gray-300 text-gray-600  border border-gray-400  p-2 rounded-md"
+            >
+              <GrView />
+            </button>
+          )}
+          {/* ADD */}
+          <button
+            onClick={() => handleOpenModal("ADD")}
+            title="Add Classification"
+            className="border p-2 rounded-md flex items-center justify-center border-primary hover:bg-primary hover:text-white dark:border-white dark:text-white"
+          >
+            <IoMdAddCircleOutline />
+          </button>
 
-        <div className="mt-10">
+          {/* EDIT */}
+          <button
+            onClick={
+              selectedClassification
+                ? () => handleOpenModal("EDIT", selectedClassification)
+                : () =>
+                    setShowAlert({
+                      show: true,
+                      message: "Please select classification to edit.",
+                      type: "warning",
+                    })
+            }
+            title="Edit Classification"
+            className="border p-2 rounded-md flex items-center justify-center border-primary hover:bg-primary hover:text-white dark:border-white dark:text-white"
+          >
+            <FiEdit />
+          </button>
+
+          {/* NONAKTIF */}
+          <button
+            onClick={
+              selectedClassification
+                ? () => handleOpenModal("NONAKTIF", selectedClassification)
+                : () =>
+                    setShowAlert({
+                      show: true,
+                      message: "Please select classification to nonaktif.",
+                      type: "warning",
+                    })
+            }
+            title="Nonactive Classification"
+            disabled={
+              selectedClassification && !selectedClassification.isActive
+            }
+            className={`border p-2 rounded-md flex items-center justify-center  hover:text-white dark:border-white dark:text-white ${
+              selectedClassification && !selectedClassification.isActive
+                ? "bg-gray-300 text-white border border-gray-400"
+                : "border-primary hover:bg-primary"
+            } `}
+          >
+            <MdBlock />
+          </button>
+
+          {/* AKTIF */}
+          <button
+            onClick={
+              selectedClassification
+                ? () => handleOpenModal("AKTIF", selectedClassification)
+                : () =>
+                    setShowAlert({
+                      show: true,
+                      message: "Please select classification to active.",
+                      type: "warning",
+                    })
+            }
+            title="Activate Classification"
+            disabled={selectedClassification && selectedClassification.isActive}
+            className={`border p-2 rounded-md flex items-center justify-center  hover:text-white dark:border-white dark:text-white ${
+              selectedClassification && selectedClassification.isActive
+                ? "bg-gray-300 text-white border border-gray-400"
+                : "border-primary hover:bg-primary"
+            } `}
+          >
+            <FaCheck />
+          </button>
+
+          {/* DELETE */}
+          <button
+            onClick={
+              selectedClassification
+                ? () => handleOpenModal("DELETE", selectedClassification)
+                : () =>
+                    setShowAlert({
+                      show: true,
+                      message: "Please select classification to delete.",
+                      type: "warning",
+                    })
+            }
+            title="Delete Classification"
+            className="border p-2 rounded-md flex items-center justify-center border-primary hover:bg-primary hover:text-white dark:border-white dark:text-white"
+          >
+            <MdDelete />
+          </button>
+
+          <button
+            onClick={() =>
+              isOpenFilter ? setOpenFilter(false) : setOpenFilter(true)
+            }
+            title="Filter Classification"
+            className="border p-2 rounded-md flex items-center justify-center border-primary hover:bg-primary hover:text-white dark:border-white dark:text-white"
+          >
+            <LuFilter />
+          </button>
+        </div>
+      </div>
+      <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md p-9">
+        <div className="mt-2">
           <TableClassification
             data={classifictaions}
-            actionTable={({ type, data }) => handleOpenModal(type, data)}
+            handleSelected={setSelectedClassification}
+            resetTrigger={!modal.open}
           />
         </div>
 

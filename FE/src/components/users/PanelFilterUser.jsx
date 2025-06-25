@@ -5,8 +5,10 @@ import { PiSlidersHorizontalBold } from "react-icons/pi";
 import SelectInput from "../../shared/SelectInput";
 import api from "../../services/axios.service";
 import { FaPlus } from "react-icons/fa6";
+import { useSearchComponent } from "../../store/SearchContext";
 
 export function PanelFilterUser({ users, setFilteredData, modal }) {
+  const { searchQuery } = useSearchComponent();
   const [selectedFilter, setSelectedFilter] = useState({
     search: "",
     grupId: "",
@@ -23,6 +25,13 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
       [e.target.name]: e.target.value,
     }));
   };
+
+  useEffect(() => {
+    setSelectedFilter((prev) => ({
+      ...prev,
+      search: searchQuery,
+    }));
+  }, [searchQuery]);
 
   useEffect(() => {
     fecthUsersFilter(selectedFilter);
@@ -73,20 +82,7 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
 
   return (
     <>
-      <div className="filter flex gap-2">
-        <Search
-          data={users}
-          value={selectedFilter.search}
-          onChange={(e) => handleOnChangeFilter(e)}
-          placeholder="Search Fullname, username or email..."
-        />
-        <button
-          onClick={() => handleFilter()}
-          className="btn-open-filter flex justify-center items-center gap-1 border rounded-md p-2 border-primary text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
-        >
-          <PiSlidersHorizontalBold />
-          <span>Filter</span>
-        </button>
+      {/* <div className="filter flex justify-between gap-2">
         <button
           onClick={() => handleModalAdd()}
           className="btn-open-filter flex justify-center items-center gap-1 border rounded-md p-2 border-primary  text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
@@ -94,36 +90,14 @@ export function PanelFilterUser({ users, setFilteredData, modal }) {
           <FaPlus />
           <span>Add</span>
         </button>
-      </div>
-      {isOpenFilter && (
-        <div className="subFilter mt-5 flex gap-3">
-          <SelectInput
-            label="Group"
-            name="grupId"
-            id="grupId"
-            value={selectedFilter.grupId}
-            onChange={(e) => handleOnChangeFilter(e)}
-            placeholder="Select Group"
-            options={grupData.map((grup) => ({
-              value: grup.grupId,
-              label: grup.grupName,
-            }))}
-          />
-
-          <SelectInput
-            label="Role"
-            name="roleId"
-            id="roleId"
-            value={selectedFilter.roleId}
-            onChange={(e) => handleOnChangeFilter(e)}
-            placeholder="Select User Role"
-            options={roleData.map((role) => ({
-              value: role.roleId,
-              label: role.roleName,
-            }))}
-          />
-        </div>
-      )}
+        <button
+          onClick={() => handleFilter()}
+          className="btn-open-filter flex justify-center items-center gap-1 border rounded-md p-2 border-primary text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
+        >
+          <PiSlidersHorizontalBold />
+          <span>Filter</span>
+        </button>
+      </div> */}
     </>
   );
 }

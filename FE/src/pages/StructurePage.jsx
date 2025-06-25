@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { TableStructure } from "../components/structures/TableStructure";
-import { Search } from "../shared/Search";
+
 import api from "../services/axios.service";
 import { Link, useSearch } from "@tanstack/react-router";
-import { Button } from "../shared/Button";
-import { FaArrowLeft, FaPlus } from "react-icons/fa";
+
+import { FaArrowLeft } from "react-icons/fa";
 import { AnimatePresence } from "motion/react";
 import { ModalStructure } from "../components/structures/ModalStructure";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { listenToUpdate } from "../services/socket.service";
 import { AlertMessage } from "../shared/Alert";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import { FiEdit } from "react-icons/fi";
+import { MdDelete } from "react-icons/md";
+
+import Split from "react-split";
 
 /* eslint-disable no-unused-vars */
 export function StructurePage() {
   const [structures, setStructure] = useState([]);
   const [classification, setClasification] = useState([]);
-
+  const [selectedStructure, setSelectedStructure] = useState(null);
+  const [isOpenFilter, setOpenFilter] = useState(null);
   const [modal, setModal] = useState({
     open: false,
     type: null,
@@ -79,61 +85,116 @@ export function StructurePage() {
 
   const handleOpenModal = (type, data) => {
     setModal({ open: true, type, data });
+    setSelectedStructure(null);
   };
   return (
     <>
-      <div className="btn-back  w-[5em] mb-2 p-3 ">
-        <Link
-          to={"/classifications"}
-          className="flex items-center gap-2 text-primary dark:text-gray-50  "
-        >
-          <FaArrowLeft className="text-2xl" /> <span>Back</span>
-        </Link>
-      </div>
-      <div className="classification py-4 px-6 bg-white dark:bg-gray-950 rounded-lg mb-5">
-        <div className="title flex text-gray-800 dark:text-gray-100 items-center text-2xl md:text-3xl font-bold my-5 gap-2">
-          <HiClipboardDocumentList />
-          <h1>Classification Detail</h1>
-        </div>
-        <div className="grid md:gap-2 text-gray-800 dark:text-gray-100">
-          <div className="md:flex md:gap-2 text-xs md:text-lg">
-            <span className=" font-bold ">Classification Name</span>
-            <span>:</span>
-            <span className="font-medium">
-              {classification?.classificationName}
-            </span>
-          </div>
-          <div className="md:flex md:gap-2 text-xs md:text-lg">
-            <span className=" font-bold">Classification Description</span>
-            <span>:</span>
-            <span className="font-medium">
-              {classification?.classificationDescription}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="max-w-full tenants-page bg-white dark:bg-gray-950 rounded-md px-9 py-2">
-        <div className="filter flex items-center mt-10 gap-2">
-          <Search
-            onChange={(e) => handleOnChangeFilter(e)}
-            placeholder="Search structure name,  ..."
-          />
-          <div className="addTenant">
-            <Button
-              onClick={() => handleOpenModal("ADD", null)}
-              className="btn-open-filter flex justify-center items-center gap-1 border rounded-md px-2 py-3 border-primary  text-primary hover:bg-primary hover:text-white hover:border-white dark:border-gray-50 dark:text-gray-50"
+      <div className="action">
+        <div className="toolbar pe-12 ps-3 flex justify-between items-center bg-white dark:bg-gray-950 mb-2 p-2">
+          {/* BACK BUTTON */}
+          <Link
+            to={"/classifications"}
+            className="flex items-center gap-2 text-primary dark:text-gray-50  "
+          >
+            <FaArrowLeft className="text-2xl" /> <span>Back</span>
+          </Link>
+          <div className="flex gap-2">
+            {/* ADD */}
+            <button
+              onClick={() => handleOpenModal("ADD")}
+              title="Add Classification"
+              className="border p-2 rounded-md flex items-center justify-center border-primary hover:bg-primary hover:text-white dark:border-white dark:text-white"
             >
-              <FaPlus />
-              <span>Add</span>
-            </Button>
+              <IoMdAddCircleOutline />
+            </button>
+
+            {/* EDIT */}
+            <button
+              onClick={
+                selectedStructure
+                  ? () => handleOpenModal("EDIT", selectedStructure)
+                  : () =>
+                      setShowAlert({
+                        show: true,
+                        message: "Please select classification to edit.",
+                        type: "warning",
+                      })
+              }
+              title="Edit Classification"
+              className="border p-2 rounded-md flex items-center justify-center border-primary hover:bg-primary hover:text-white dark:border-white dark:text-white"
+            >
+              <FiEdit />
+            </button>
+
+            {/* DELETE */}
+            <button
+              onClick={
+                selectedStructure
+                  ? () => handleOpenModal("DELETE", selectedStructure)
+                  : () =>
+                      setShowAlert({
+                        show: true,
+                        message: "Please select classification to delete.",
+                        type: "warning",
+                      })
+              }
+              title="Delete Classification"
+              className="border p-2 rounded-md flex items-center justify-center border-primary hover:bg-primary hover:text-white dark:border-white dark:text-white"
+            >
+              <MdDelete />
+            </button>
           </div>
         </div>
-        <div className="tableTenants mt-10 ">
-          <TableStructure
-            data={structures}
-            actionTable={(val) => handleOpenModal(val.type, val.data)}
-          />
-        </div>
+      </div>
+
+      {/* TABLE */}
+      <div
+        className="max-w-full tenants-page bg-white dark:bg-gray-950
+       rounded-md px-9 py-2"
+      >
+        <Split
+          className="flex "
+          sizes={[80, 20]}
+          minSize={100}
+          gutterSize={5}
+          direction="horizontal"
+        >
+          {/* Panel Atas */}
+          <div className=" p-4 w-full overflow-auto">
+            <div className="tableTenants mt-2 ">
+              <TableStructure
+                data={structures}
+                resetTrigger={!modal.open}
+                handleSelected={setSelectedStructure}
+              />
+            </div>
+          </div>
+
+          {/* Panel Tengah */}
+          <div className="overflow-auto classification ps-4 bg-white dark:bg-gray-950 rounded-lg mb-5">
+            <div className="title flex text-gray-800 dark:text-gray-100 items-center text-md md:text-2xl font-bold my-5 gap-2">
+              <HiClipboardDocumentList />
+              <h1>Classification Detail</h1>
+            </div>
+            <div className="grid md:gap-2 text-gray-800 dark:text-gray-100">
+              <div className=" text-xs md:text-lg">
+                <span className="font-bold ">Classification Name</span>
+                <span>:</span>
+                <p className="font-medium">
+                  {classification?.classificationName}
+                </p>
+              </div>
+              <div className="text-xs md:text-lg">
+                <span className=" font-bold">Classification Description</span>
+                <span>:</span>
+                <p className="font-medium">
+                  {classification?.classificationDescription}
+                </p>
+              </div>
+            </div>
+          </div>
+        </Split>
+
         <ModalStructure
           classificationId={classificationId}
           modal={modal}
