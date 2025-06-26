@@ -111,74 +111,27 @@ const deletedDetail = api.catchAsync(async (req, res) => {
 
 const getGlobalFileTree = api.catchAsync(async (req, res) => {
   const classifications = await modelClassification.getAll();
-
-  const response = [];
+  const cabinetMap = new Map();
 
   for (const cls of classifications) {
-    const classificationId = cls.classificationId;
-    const classificationName = cls.classificationName;
+    const { cabinetId, cabinetName, classificationId, classificationName } =
+      cls;
 
-    const structures = await modelStructure.getByClassificationId(
-      classificationId
-    );
-    const tableName = `tbl_detail${classificationId}`;
-
-    let details = [];
-    try {
-      details = await modelStructure.getAllDetail(tableName);
-    } catch (err) {
-      console.warn(
-        `Failed to fetch detail for classification ${classificationId}:`,
-        err.message
-      );
-    }
-
-    if (details.length === 0) {
-      response.push({
-        classificationId,
-        classificationName,
-        detailId: null,
-        path: classificationName,
-        documents: [],
-      });
-      continue;
-    }
-
-    for (const detail of details) {
-      const path = [
-        classificationName,
-        ...structures
-          .slice(0, -1) // ambil semua kecuali struktur terakhir (file name)
-          .map((s) => {
-            const val = detail[s.structureDescription];
-
-            if (s.typeId === 3 && val) {
-              return moment(val).format("YYYYMMDD");
-            }
-
-            return val !== null && val !== undefined ? `${val}` : "-";
-          }),
-      ].join("/");
-
-      const doc = {
-        documentId: detail.documentId,
-        encryption_title: detail.encryption_title,
-        versionNumber: detail.versionNumber,
-        versionPath: detail.versionPath,
-        isLatest: detail.isLatest,
-      };
-
-      response.push({
-        classificationId,
-        classificationName,
-        detailId: detail.detailId,
-        path,
-        documents: [doc].filter((d) => d.documentId),
+    if (!cabinetMap.has(cabinetId)) {
+      cabinetMap.set(cabinetId, {
+        cabinetId,
+        cabinetName,
+        classifications: [],
       });
     }
+
+    cabinetMap.get(cabinetId).classifications.push({
+      classificationId,
+      classificationName,
+    });
   }
 
-  return api.success(res, response);
+  return api.success(res, Array.from(cabinetMap.values()));
 });
 
 // TYPE DATA

@@ -5,6 +5,7 @@ import { Sidebar } from "./Sidebar";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { useTitle } from "../store/TitleContext";
+import { Footer } from "./Footer";
 
 export function LayoutRoot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,26 +22,25 @@ export function LayoutRoot() {
   }, []);
 
   return (
-    <>
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar
+    <div className="h-screen bg-gray-300 w-screen overflow-hidden flex">
+      <Sidebar
+        isOpen={isOpen}
+        onToggle={() => setIsOpen(!isOpen)}
+        changeTitle={(data) => updateTitle(data)}
+      />
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <Topbar
           isOpen={isOpen}
           onToggle={() => setIsOpen(!isOpen)}
-          changeTitle={(data) => updateTitle(data)}
+          titleData={titleData}
         />
-        <div className="flex flex-col flex-1 min-w-0">
-          <Topbar
-            isOpen={isOpen}
-            onToggle={() => setIsOpen(!isOpen)}
-            titleData={titleData}
-          />
-          <main className="px-1 py-1 bg-gray-200 dark:bg-gray-900 flex-1 overflow-y-auto overflow-x-hidden  min-w-0">
-            <div className="">
-              <Outlet />
-            </div>
-          </main>
-        </div>
+        <main className="flex-1 overflow-hidden">
+          <Outlet />
+        </main>
+        <footer className="bg-gray-900 text-gray-800 py-1 z-40">
+          <Footer />
+        </footer>
       </div>
-    </>
+    </div>
   );
 }

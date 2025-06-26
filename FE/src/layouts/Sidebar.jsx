@@ -166,7 +166,7 @@ export function Sidebar({ isOpen, onToggle, changeTitle }) {
     <motion.div
       animate={{ width: isOpen ? "14em" : "4em" }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className="min-h-full dark:shadow-gray-900 dark:bg-gray-950"
+      className="min-h-full drop-shadow-xl bg-white dark:shadow-gray-900 dark:bg-gray-950"
     >
       <div
         className={`flex items-center ${isOpen ? "py-3 ps-4" : "py-4 px-4"}`}

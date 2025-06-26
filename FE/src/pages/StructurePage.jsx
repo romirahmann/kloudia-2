@@ -15,6 +15,7 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 import Split from "react-split";
+import { useSearchComponent } from "../store/SearchContext";
 
 /* eslint-disable no-unused-vars */
 export function StructurePage() {
@@ -22,6 +23,7 @@ export function StructurePage() {
   const [classification, setClasification] = useState([]);
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [isOpenFilter, setOpenFilter] = useState(null);
+  const { searchQuery } = useSearchComponent();
   const [modal, setModal] = useState({
     open: false,
     type: null,
@@ -70,12 +72,14 @@ export function StructurePage() {
     }
   };
 
-  const handleOnChangeFilter = async (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    fetchBySearch();
+  }, [searchQuery]);
 
+  const fetchBySearch = async () => {
     try {
       let res = await api.get(
-        `/master/filter/structure/${classificationId}?search=${value}`
+        `/master/filter/structure/${classificationId}?search=${searchQuery}`
       );
       setStructure(res.data.data);
     } catch (error) {

@@ -1,27 +1,72 @@
 export function buildTree(files) {
-  const root = [];
+  const cabinetMap = new Map();
 
   files.forEach((file) => {
-    const parts = file.path.split("/").filter(Boolean);
-    let current = root;
+    const {
+      cabinetId,
+      classifications,
+      cabinetName,
+      isDeleted,
+      isFolder,
+      detailId,
+      fileName,
+    } = file;
 
-    parts.forEach((part, idx) => {
-      let node = current.find((x) => x.name === part && x.type === "folder");
+    if (!cabinetMap.has(cabinetId)) {
+      cabinetMap.set(cabinetId, {
+        id: `cabinet-${cabinetId}`,
+        cabinetId,
+        name: cabinetName,
+        type: "cabinet",
+        children: [
+          {
+            id: `${cabinetId}-files`,
+            name: "Files",
+            type: "files",
+            classifications,
+            children: [],
+          },
+          {
+            id: `${cabinetId}-folders`,
+            name: "Folders",
+            type: "folder",
+            classifications,
+            children: [],
+          },
+          {
+            id: `${cabinetId}-recycle`,
+            name: "Recycle Bin",
+            type: "recycle",
+            classifications,
+            children: [],
+          },
+        ],
+      });
+    }
 
-      if (!node) {
-        node = {
-          id: `${file.detailId}-${idx}-${part}`,
-          classificationId: file.classificationId,
-          name: part,
-          type: "folder",
-          children: [],
-        };
-        current.push(node);
-      }
+    const cabinetNode = cabinetMap.get(cabinetId);
+    const [filesNode, foldersNode, recycleNode] = cabinetNode.children;
 
-      current = node.children;
-    });
+    // skip jika tidak ada detail
+    if (!detailId) return;
+
+    const targetNode = isDeleted
+      ? recycleNode
+      : isFolder
+      ? foldersNode
+      : filesNode;
+
+    const leaf = {
+      id: `${detailId}-file-${fileName}`,
+      name: fileName,
+      type: "file",
+      cabinetId,
+      classifications,
+      ...file,
+    };
+
+    targetNode.children.push(leaf);
   });
 
-  return root;
+  return Array.from(cabinetMap.values());
 }
