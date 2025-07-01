@@ -74,6 +74,7 @@ const byFilter = async (filter) => {
 const isExistsStructure = async (tabelName) =>
   await db.schema.hasTable(tabelName);
 
+const isExistDetail = async (tableName) => await db.schema.hasTable(tableName);
 const createStrucutre = async (tableName) =>
   await db.schema.createTable(tableName, (table) => {
     table.increments("structureId").primary().notNullable();
@@ -100,4 +101,5 @@ module.exports = {
   byFilter,
   byID,
   deleteDetail,
+  isExistDetail,
 };

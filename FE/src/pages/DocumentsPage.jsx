@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { AiOutlineFileAdd } from "react-icons/ai";
-import { FaEye } from "react-icons/fa";
+import { FaArchive, FaEye, FaFileAlt, FaFolder, FaTrash } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdOutlineDeleteForever } from "react-icons/md";
@@ -23,6 +23,7 @@ export function DocumentsPage() {
   const [dataDetail, setDataDetail] = useState([]);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [documentTree, setDocumentTree] = useState([]);
+  const [isOpenFolder, setOpenFolder] = useState(false);
 
   const navigate = useNavigate();
 
@@ -85,7 +86,7 @@ export function DocumentsPage() {
 
       case "ADD":
         if (!selectedClassification)
-          return showWarning("Choose document first!");
+          return showWarning("Creat classification first!");
         navigate({
           to: "add-document",
           search: {
@@ -166,13 +167,60 @@ export function DocumentsPage() {
         {/* SIDENAV */}
         <div className="w-full h-full bg-white overflow-auto">
           <div className="text-sm lg:text-xl text-center font-bold border-b-2 py-5 px-5 dark:text-gray-200 dark:bg-gray-950 rounded-lg">
-            <h1>DOCUMENTS</h1>
+            <h1>CABINETS</h1>
           </div>
           <div className="mt-2  bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm overflow-auto flex flex-col custom-scrollbar">
-            <FolderTree
+            {isOpenFolder ? (
+              <div className="ml-2">FOLDER OPEN</div>
+            ) : (
+              <>
+                <div className="ml-2">
+                  <div className="flex items-center cursor-pointer hover:text-primary">
+                    <FaArchive className="mr-2 text-purple-500" />
+                    <h3>Cabinet 1</h3>
+                  </div>
+                  <div className="ml-4 border-l border-gray-300 dark:border-gray-600 pl-2 mt-1">
+                    <div className="flex text-sm">
+                      <FaFileAlt className="mr-2 text-blue-500" />
+                      <h3>File</h3>
+                    </div>
+                    <div className="flex text-sm ">
+                      <FaFolder className="mr-2 text-yellow-600" />
+                      <h3>Folder</h3>
+                    </div>
+                    <div className="flex text-sm ">
+                      <FaTrash className="mr-2 text-red-500" />
+                      <h3>Recycle</h3>
+                    </div>
+                  </div>
+                </div>
+                <div className="ml-2">
+                  <div className="flex items-center cursor-pointer hover:text-primary">
+                    <FaArchive className="mr-2 text-purple-500" />
+                    <h3>Cabinet 2</h3>
+                  </div>
+                  <div className="ml-4 border-l border-gray-300 dark:border-gray-600 pl-2 mt-1">
+                    <div className="flex text-sm">
+                      <FaFileAlt className="mr-2 text-blue-500" />
+                      <h3>File</h3>
+                    </div>
+                    <div className="flex text-sm ">
+                      <FaFolder className="mr-2 text-yellow-600" />
+
+                      <h3>Folder</h3>
+                    </div>
+                    <div className="flex text-sm ">
+                      <FaTrash className="mr-2 text-red-500" />
+                      <h3>Recycle</h3>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            {/* <FolderTree
               data={documentTree}
               onSelect={handleSelectClassification}
-            />
+            /> */}
           </div>
         </div>
 
@@ -185,9 +233,9 @@ export function DocumentsPage() {
             gutterSize={5}
             direction="vertical"
           >
-            <div className="content h-full overflow-auto ">
+            <div className="content h-full bg-white overflow-auto ">
               {/* HEADER */}
-              <div className="font-bold border border-gray-600/30 px-5 py-5  rounded-lg bg-white dark:bg-gray-950 dark:text-gray-200 flex flex-col md:flex-row justify-between gap-3 md:gap-2">
+              <div className="font-bold  px-5 py-2  rounded-lg bg-white dark:bg-gray-950 dark:text-gray-200 flex flex-col md:flex-row justify-between gap-3 md:gap-2">
                 <h1 className="text-sm text-center md:text-2xl font-bold order-1 md:order-2">
                   {selectedClassification?.classificationName || ""}
                 </h1>
@@ -222,7 +270,7 @@ export function DocumentsPage() {
               </div>
 
               {/* TABLE */}
-              <div className="mt-2 border border-gray-600/30 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm p-3 flex-1 overflow-auto">
+              <div className="mt-2 bg-white dark:bg-gray-950 dark:text-gray-200 rounded-sm  flex-1 overflow-auto">
                 <TableDocument
                   classificationId={selectedClassification?.classificationId}
                   data={dataDetail}
