@@ -28,7 +28,7 @@ export function Sidebar({ selectMenu }) {
 export function SidebarDetail({ selectedMenu }) {
   return (
     <div className="bg-white dark:bg-[#0e1d34] h-screen p-4 text-gray-700">
-      <div>
+      <div className="border-b-2 mt-2">
         <h2 className="text-lg dark:text-gray-50  font-semibold mb-4">
           {selectedMenu || "Dashboard"}
         </h2>
@@ -46,8 +46,10 @@ export function SidebarDetail({ selectedMenu }) {
       )}
       {/* Setting */}
       {selectedMenu === "Setting" && (
-        <ul className="space-y-2">
-          <li className="hover:text-primary cursor-pointer">Groups</li>
+        <ul className="space-y-2 mt-5">
+          <li className="hover:text-primary cursor-pointer bg-purple-500 p-1 rounded-md">
+            Groups
+          </li>
           <li className="hover:text-primary cursor-pointer">
             <Link to="/setting">User</Link>
           </li>
