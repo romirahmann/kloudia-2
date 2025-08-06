@@ -1,7 +1,7 @@
 export function GroupPage() {
   return (
     <>
-      <h1>Userpage</h1>
+      <h1>Groupage</h1>
     </>
   );
 }

@@ -9,6 +9,8 @@ import { ProtectedRoute } from "../components/auth/ProtectedRoutes";
 import { LoginPage } from "../pages/auth/LoginPage";
 import { MainLayout } from "../layouts/MainLayout";
 import { DashboardPage } from "../pages/main/DashboardPage";
+import { UserPage } from "../pages/main/UserPage";
+import { GroupPage } from "../pages/main/GroupPage";
 
 const rootRoute = createRootRoute();
 
@@ -36,10 +38,23 @@ const dashboardPage = createRoute({
   component: DashboardPage,
 });
 
+const userPage = createRoute({
+  getParentRoute: () => mainLayout,
+  path: "/user",
+  component: UserPage,
+});
+
+const groupPage = createRoute({
+  getParentRoute: () => mainLayout,
+  path: "/group",
+  component: GroupPage,
+});
+
 const routeTree = rootRoute.addChildren([
   protectedLayout,
   loginPage,
-  mainLayout.addChildren([dashboardPage]),
+
+  mainLayout.addChildren([dashboardPage, userPage, groupPage]),
 ]);
 
 export const router = createRouter({

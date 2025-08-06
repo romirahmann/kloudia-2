@@ -1,25 +1,54 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
-import { Outlet } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "@tanstack/react-router";
 import { Sidebar, SidebarDetail } from "./Sidebar";
 import { TopBar } from "./Topbar";
 import { Footer } from "./Footer";
 import { AnimatePresence, motion } from "framer-motion";
 
 export function MainLayout() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [selectMenu, setSelectMenu] = useState("Dashboard");
+  const navigate = useNavigate();
+
+  const [collapsed, setCollapsed] = useState(true);
+  const [selectMenu, setSelectMenu] = useState(() => {
+    return sessionStorage.getItem("selectedMenu") || "Dashboard";
+  });
+  const [selectedSubmenu, setSelectedSubmenu] = useState(() => {
+    return sessionStorage.getItem("selectedSubmenu") || null;
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("selectedMenu", selectMenu);
+  }, [selectMenu]);
+
+  useEffect(() => {
+    if (selectedSubmenu) {
+      sessionStorage.setItem("selectedSubmenu", selectedSubmenu);
+    } else {
+      sessionStorage.removeItem("selectedSubmenu");
+    }
+  }, [selectedSubmenu]);
 
   const handleSelectedMenu = (menu) => {
-    setCollapsed(false);
     setSelectMenu(menu);
+    setSelectedSubmenu(null);
+
+    if (menu === "Dashboard") {
+      navigate({ to: "/" });
+      setCollapsed(true);
+    } else {
+      setCollapsed(false);
+    }
+  };
+
+  const handleSubMenuSelected = (submenu) => {
+    setSelectedSubmenu(submenu);
   };
 
   return (
-    <div className="flex h-screen  w-full overflow-hidden">
-      <Sidebar selectMenu={(menu) => handleSelectedMenu(menu)} />
+    <div className="flex h-screen w-full overflow-hidden">
+      <Sidebar selectMenu={handleSelectedMenu} selectedMenu={selectMenu} />
 
-      {/* Animate Sidebar Detail */}
       <AnimatePresence mode="wait">
         {!collapsed && (
           <motion.div
@@ -28,16 +57,23 @@ export function MainLayout() {
             animate={{ width: 200, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ type: "tween", duration: 0.3 }}
-            className="overflow-hidden "
+            className="overflow-hidden"
           >
-            <SidebarDetail selectedMenu={selectMenu} />
+            <SidebarDetail
+              selectedMenu={selectMenu}
+              selectedSubmenu={selectedSubmenu}
+              onSelectSubmenu={handleSubMenuSelected}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
       <div className="flex flex-col flex-1 overflow-hidden bg-[#f8fafc]">
-        <TopBar onToggleSidebar={() => setCollapsed(!collapsed)} />
+        <TopBar
+          onToggleSidebar={() => setCollapsed(!collapsed)}
+          selectedMenu={selectMenu}
+          selectedSubmenu={selectedSubmenu}
+        />
         <main className="flex-1 overflow-auto p-4">
           <Outlet />
         </main>
