@@ -93,7 +93,7 @@ export function Table({
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className="border-b p-2 text-sm dark:text-gray-400 text-gray-600 whitespace-nowrap"
+                      className="border-b p-2 text-sm dark:text-gray-200 text-gray-600 whitespace-nowrap"
                     >
                       {col.render
                         ? col.render(row[col.key], row, index)

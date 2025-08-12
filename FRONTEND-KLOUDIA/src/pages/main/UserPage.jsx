@@ -12,15 +12,24 @@ import {
 } from "react-icons/fa";
 import { TableUser } from "../../components/users/TableUser";
 import api from "../../services/axios.service";
+import { useAlert } from "../../store/AlertContext";
+import { ActionUser } from "../../components/users/ActionUser";
 
 export function UserPage() {
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState();
+  const [selectedUser, setSelectedUser] = useState([]);
   const [filters, setFilters] = useState({
     name: "",
     role: "",
     status: "",
   });
+  const [showModal, setShowModal] = useState({
+    show: false,
+    type: "",
+    data: null,
+  });
+
+  const { showAlert } = useAlert();
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -48,34 +57,93 @@ export function UserPage() {
     }
   };
 
+  const handleModal = async (type) => {
+    switch (type) {
+      case "ADD":
+        setShowModal({
+          show: true,
+          type: type,
+          data: null,
+        });
+        break;
+      case "EDIT":
+        if (selectedUser.length > 1 || selectedUser.length === 0) {
+          showAlert(
+            `${
+              selectedUser.length === 0
+                ? "Please select a user to edit"
+                : "Please select only one user to edit"
+            }`,
+            "warning"
+          );
+
+          return;
+        }
+        setShowModal({ show: true, type: type, data: selectedUser[0] });
+        break;
+      case "DELETE":
+        if (selectedUser.length > 1 || selectedUser.length === 0) {
+          showAlert(
+            `${
+              selectedUser.length === 0
+                ? "Please select a user to delete"
+                : "Please select only one user to delete"
+            }`,
+            "warning"
+          );
+
+          return;
+        }
+
+        setShowModal({ show: true, type: type, data: selectedUser[0] });
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const handleOnAction = async () => {};
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-semibold text-gray-800 flex items-center gap-2">
-          <FaUsersCog className="text-blue-600" />
-          Manajemen User
+          <FaUsersCog className="text-blue-600 dark:text-gray-100" />
+          <p className="dark:text-gray-100">Manajemen User</p>
         </h1>
         <div className="action flex gap-2">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow transition-all flex items-center gap-2">
+          <button
+            onClick={() => handleModal("ADD")}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow transition-all flex items-center gap-2"
+          >
             <FaPlus />
             Tambah User
           </button>
-          <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow transition-all flex items-center gap-2">
+          <button
+            onClick={() => handleModal("EDIT")}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow transition-all flex items-center gap-2"
+          >
             <FaEdit />
             Edit User
           </button>
-          <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow transition-all flex items-center gap-2">
+          <button
+            onClick={() => handleModal("DELETE")}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow transition-all flex items-center gap-2"
+          >
             <FaTrash />
-            Edit User
+            Delete User
           </button>
         </div>
       </div>
 
       {/* FILTER */}
-      <div className="bg-white shadow rounded-xl p-4">
+      <div className="bg-white dark:bg-gray-950 shadow rounded-xl p-4">
         <div className="flex flex-col md:flex-row md:items-end gap-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium mb-1">Nama</label>
+            <label className="block dark:text-gray-100 text-sm font-medium mb-1">
+              Nama
+            </label>
             <input
               type="text"
               name="name"
@@ -86,7 +154,9 @@ export function UserPage() {
             />
           </div>
           <div className="flex-1">
-            <label className="block text-sm font-medium mb-1">Role</label>
+            <label className="block dark:text-gray-100 text-sm font-medium mb-1">
+              Role
+            </label>
             <select
               name="role"
               value={filters.role}
@@ -99,8 +169,10 @@ export function UserPage() {
               <option value="viewer">Viewer</option>
             </select>
           </div>
-          <div className="flex-1">
-            <label className="block text-sm font-medium mb-1">Status</label>
+          <div className="flex-1 ">
+            <label className="block text-sm font-medium mb-1 dark:text-gray-100">
+              Status
+            </label>
             <select
               name="status"
               value={filters.status}
@@ -132,8 +204,17 @@ export function UserPage() {
       </div>
 
       {/* TABEL */}
-      <div className="bg-white shadow rounded-xl overflow-x-auto min-w-full  p-8">
+      <div className="bg-white dark:bg-gray-950 shadow rounded-xl overflow-x-auto min-w-full  p-8">
         <TableUser data={users} handleSelected={setSelectedUser} />
+        <ActionUser
+          isOpen={showModal.show}
+          type={showModal.type}
+          data={showModal.data}
+          onClose={() => {
+            setShowModal({ show: false, type: "", data: "" });
+          }}
+          onAction={handleOnAction}
+        />
       </div>
     </div>
   );

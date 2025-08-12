@@ -68,7 +68,7 @@ export function MainLayout() {
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col flex-1 overflow-hidden bg-[#f8fafc]">
+      <div className="flex flex-col flex-1 overflow-hidden bg-[#f8fafc] dark:bg-gray-800">
         <TopBar
           onToggleSidebar={() => setCollapsed(!collapsed)}
           selectedMenu={selectMenu}
